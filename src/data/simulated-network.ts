@@ -58,4 +58,5 @@ export const SAVED_CONTACTS: Record<string, string> = {
   [N("+1 (972) 555-0122")]: "Mom",
   [N("+1 (972) 555-0133")]: "Dad",
   [N("+1 (972) 555-0199")]: "Tía Carmen",
+  [N("+1 (972) 555-0155")]: "Sis",
 };

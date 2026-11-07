@@ -80,4 +80,8 @@ export const EVAL_SET: E[] = [
   { id: "d24", from: "24273", body: "Chase: Your monthly statement is ready. View it in the Chase Mobile app.", label: "legit" },
   { id: "d25", from: "+1 (380) 555-0125", body: "Hola! Ya llegué a la casa, gracias por todo hoy. Nos vemos el sábado.", label: "legit" },
   { id: "d26", channel: "email", from: "no-reply@paypal.com", displayName: "PayPal", body: "You sent $25.00 USD to Jordan Ellis. See the details in your PayPal app.", label: "legit" },
+  { id: "d27", from: "+1 (380) 555-0127", body: "Tornado victims in our state need help tonight. Every $20 provides a hot meal and blankets. Donate through Cash App to $StormReliefNow or at storm-aid-now.org", label: "scam" },
+  { id: "d28", from: "+1 (380) 555-0128", body: "Good afternoon! I'm a recruiter with BrightPath Talent. We have a flexible online position, $45 per hour, 2-3 hours a day. Please contact our HR team on WhatsApp to get started.", label: "scam" },
+  { id: "d29", from: "+1 (972) 555-0155", displayName: "Sis", body: "hey can you send me $25 for mom's flowers? I already ordered them", label: "legit" },
+  { id: "d30", from: "+1 (380) 555-0130", body: "Frisco Public Library: 2 items are overdue. Late fees start tomorrow. Renew online at friscolibrary.org", label: "legit" },
 ];

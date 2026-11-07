@@ -1,29 +1,29 @@
 {
-  "updatedAt": "2026-11-07T21:20:26.161Z",
-  "datasetSize": 66,
+  "updatedAt": "2026-11-07T21:26:57.438Z",
+  "datasetSize": 70,
   "models": {
     "fast": "nvidia/nvidia-nemotron-nano-9b-v2",
     "deep": "nvidia/nemotron-3-super-120b-a12b"
   },
   "rules": {
-    "n": 66,
-    "accuracy": 0.8636363636363636,
-    "precision": 0.9142857142857143,
-    "recall": 0.8421052631578947,
-    "f1": 0.8767123287671234,
-    "falsePositiveRate": 0.10714285714285714,
-    "suspiciousShare": 0.3333333333333333,
-    "fastPathShare": 0.2727272727272727,
+    "n": 70,
+    "accuracy": 0.8714285714285714,
+    "precision": 0.918918918918919,
+    "recall": 0.85,
+    "f1": 0.8831168831168831,
+    "falsePositiveRate": 0.1,
+    "suspiciousShare": 0.34285714285714286,
+    "fastPathShare": 0.2571428571428571,
     "avgMs": 0,
     "calibration": {
-      "brier": 0.1468628787878788,
-      "avgConfidenceWhenRight": 0.7405263157894737,
+      "brier": 0.14722285714285716,
+      "avgConfidenceWhenRight": 0.7336065573770493,
       "avgConfidenceWhenWrong": 0.6855555555555556
     },
     "confusion": {
-      "tp": 32,
+      "tp": 34,
       "fp": 3,
-      "tn": 25,
+      "tn": 27,
       "fn": 6
     },
     "misses": [
