@@ -48,3 +48,14 @@ export const SIMULATED_NUMBERS: Record<string, SimNumber> = {
   [N("+1 (214) 555-0186")]: { lineType: "voip", numberAgeDays: 2, messages24h: 35, distinctRecipients24h: 35, spamReports7d: 8 },
   [N("+1 (972) 555-0100")]: { lineType: "landline", numberAgeDays: 4200, attestation: "A", messages24h: 210, distinctRecipients24h: 205, spamReports7d: 0, registeredBusiness: "Richardson Family Clinic" },
 };
+
+/**
+ * The phone owner's address book (synthetic), as an on-device app would see it.
+ * A text from a saved contact is shown with the contact's name; a scammer on a
+ * "new number" cannot appear here. Keys are digits only.
+ */
+export const SAVED_CONTACTS: Record<string, string> = {
+  [N("+1 (972) 555-0122")]: "Mom",
+  [N("+1 (972) 555-0133")]: "Dad",
+  [N("+1 (972) 555-0199")]: "Tía Carmen",
+};
