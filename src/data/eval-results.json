@@ -1,46 +1,229 @@
 {
-  "updatedAt": "2026-11-07T21:06:08.871Z",
-  "datasetSize": 40,
+  "updatedAt": "2026-11-07T21:20:26.161Z",
+  "datasetSize": 66,
   "models": {
     "fast": "nvidia/nvidia-nemotron-nano-9b-v2",
     "deep": "nvidia/nemotron-3-super-120b-a12b"
   },
   "rules": {
-    "n": 40,
-    "accuracy": 0.925,
-    "precision": 0.9523809523809523,
-    "recall": 0.9090909090909091,
-    "f1": 0.9302325581395349,
-    "falsePositiveRate": 0.05555555555555555,
-    "suspiciousShare": 0.3,
-    "fastPathShare": 0.325,
-    "avgMs": 3,
+    "n": 66,
+    "accuracy": 0.8636363636363636,
+    "precision": 0.9142857142857143,
+    "recall": 0.8421052631578947,
+    "f1": 0.8767123287671234,
+    "falsePositiveRate": 0.10714285714285714,
+    "suspiciousShare": 0.3333333333333333,
+    "fastPathShare": 0.2727272727272727,
+    "avgMs": 0,
+    "calibration": {
+      "brier": 0.1468628787878788,
+      "avgConfidenceWhenRight": 0.7405263157894737,
+      "avgConfidenceWhenWrong": 0.6855555555555556
+    },
     "confusion": {
-      "tp": 20,
-      "fp": 1,
-      "tn": 17,
-      "fn": 2
+      "tp": 32,
+      "fp": 3,
+      "tn": 25,
+      "fn": 6
     },
     "misses": [
       {
         "id": "e13",
         "label": "scam",
         "got": "safe",
+        "confidence": 0.86,
         "body": "Hi Jessica, it's Kevin from the conference. Are we still meeting for coffee tomorrow?"
       },
       {
         "id": "e16",
         "label": "scam",
         "got": "safe",
-        "body": "This is Officer Grant with the Dallas County Sheriff. You missed jury duty and there is a "
+        "confidence": 0.7,
+        "body": "This is Officer Grant with the Dallas County Sheriff. You missed jury duty and there is a warrant for your arr"
       },
       {
         "id": "l11",
         "label": "legit",
         "got": "suspicious",
-        "body": "Your Chase card ending 8812 was used for $54.20 at H-E-B. No action needed if this was you"
+        "confidence": 0.55,
+        "body": "Your Chase card ending 8812 was used for $54.20 at H-E-B. No action needed if this was you."
+      },
+      {
+        "id": "d03",
+        "label": "scam",
+        "got": "safe",
+        "confidence": 0.86,
+        "body": "Your Netflix membership is on hold. Update billing: http://198.51.100.23/nflx"
+      },
+      {
+        "id": "d05",
+        "label": "scam",
+        "got": "safe",
+        "confidence": 0.7,
+        "body": "¡Hola! Buscamos personal para trabajar desde casa. Gane $300 al día con solo 1 hora. Responda SÍ para más info"
+      },
+      {
+        "id": "d08",
+        "label": "scam",
+        "got": "safe",
+        "confidence": 0.7,
+        "body": "Parking Enforcement: A citation was issued to your vehicle. Scan the QR code on the notice on your windshield "
+      },
+      {
+        "id": "d15",
+        "label": "scam",
+        "got": "safe",
+        "confidence": 0.7,
+        "body": "Dept of Education: Your student loan balance may qualify for forgiveness. Act before the program closes this w"
+      },
+      {
+        "id": "d17",
+        "label": "legit",
+        "got": "suspicious",
+        "confidence": 0.55,
+        "body": "Wells Fargo: Card ending 2210 declined for $310.00 at an online store. Reply YES if this was you, NO if not."
+      },
+      {
+        "id": "d18",
+        "label": "legit",
+        "got": "suspicious",
+        "confidence": 0.55,
+        "body": "Your Lyft code is 4821. Never share this code."
       }
     ]
   },
-  "nemotron": null
+  "nemotron": null,
+  "holdout": {
+    "datasetSize": 51,
+    "rules": {
+      "n": 51,
+      "accuracy": 0.7058823529411765,
+      "precision": 0.7407407407407407,
+      "recall": 0.7142857142857143,
+      "f1": 0.7272727272727273,
+      "falsePositiveRate": 0.30434782608695654,
+      "suspiciousShare": 0.43137254901960786,
+      "fastPathShare": 0.21568627450980393,
+      "avgMs": 0,
+      "calibration": {
+        "brier": 0.2114544117647058,
+        "avgConfidenceWhenRight": 0.7077777777777775,
+        "avgConfidenceWhenWrong": 0.6673333333333334
+      },
+      "confusion": {
+        "tp": 20,
+        "fp": 7,
+        "tn": 16,
+        "fn": 8
+      },
+      "misses": [
+        {
+          "id": "h05",
+          "label": "scam",
+          "got": "safe",
+          "confidence": 0.7,
+          "body": "Hi, this is Rachel from Hirewell Staffing. Your resume was selected for a remote data entry position paying $3"
+        },
+        {
+          "id": "h06",
+          "label": "scam",
+          "got": "safe",
+          "confidence": 0.7,
+          "body": "Families on the Gulf Coast lost everything in this week's hurricane. A $25 gift feeds a family for a week. Ple"
+        },
+        {
+          "id": "h07",
+          "label": "scam",
+          "got": "safe",
+          "confidence": 0.7,
+          "body": "This is the disconnection department at North Texas Power and Light. Your service is scheduled to be shut off "
+        },
+        {
+          "id": "h08",
+          "label": "scam",
+          "got": "safe",
+          "confidence": 0.7,
+          "body": "Student Loan Notice: your federal loans are approved for full forgiveness under the 2026 relief program. Final"
+        },
+        {
+          "id": "h11",
+          "label": "scam",
+          "got": "safe",
+          "confidence": 0.86,
+          "body": "Your Microsoft 365 password expires today. To keep your current password, scan the QR code in the attachment w"
+        },
+        {
+          "id": "h20",
+          "label": "scam",
+          "got": "safe",
+          "confidence": 0.7,
+          "body": "Courtesy reminder from TxTag: there is a remaining balance of $3.75 on your account. You can settle it at txta"
+        },
+        {
+          "id": "h24",
+          "label": "scam",
+          "got": "safe",
+          "confidence": 0.86,
+          "body": "FedEx: We attempted to deliver your parcel today. Choose a new delivery time here: http://203.0.113.45/fedex/r"
+        },
+        {
+          "id": "h28",
+          "label": "scam",
+          "got": "safe",
+          "confidence": 0.86,
+          "body": "Hey David, long time no talk! I was going through old photos and thought of you. I've been doing really well w"
+        },
+        {
+          "id": "k01",
+          "label": "legit",
+          "got": "suspicious",
+          "confidence": 0.55,
+          "body": "Chase Fraud Alert: Did you use your card ending 4471 for $212.35 at Target on 11/06? Reply YES or NO. Msg & da"
+        },
+        {
+          "id": "k02",
+          "label": "legit",
+          "got": "suspicious",
+          "confidence": 0.59,
+          "body": "Wells Fargo: Suspicious attempt on debit card ending 9033 for $48.00 at an online merchant. Reply 1 if it was "
+        },
+        {
+          "id": "k04",
+          "label": "legit",
+          "got": "suspicious",
+          "confidence": 0.59,
+          "body": "Your Venmo verification code is 830441. Venmo will never call you or ask for this code. Don't share it with an"
+        },
+        {
+          "id": "k12",
+          "label": "legit",
+          "got": "suspicious",
+          "confidence": 0.55,
+          "body": "Bank of America: Your available balance is below $100.00. Log in to the mobile app to see recent activity."
+        },
+        {
+          "id": "k13",
+          "label": "legit",
+          "got": "suspicious",
+          "confidence": 0.55,
+          "body": "Hey sweetie, can you Venmo me the $40 for your half of grandma's birthday dinner when you get a chance? No rus"
+        },
+        {
+          "id": "k14",
+          "label": "legit",
+          "got": "suspicious",
+          "confidence": 0.55,
+          "body": "Sent you $200 on Zelle for your textbooks. Let me know when it shows up."
+        },
+        {
+          "id": "k15",
+          "label": "legit",
+          "got": "suspicious",
+          "confidence": 0.55,
+          "body": "hey can you venmo me $12 for the pizza last night? 🍕"
+        }
+      ]
+    },
+    "nemotron": null
+  }
 }

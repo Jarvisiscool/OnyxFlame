@@ -97,6 +97,8 @@ function brandCheck(hostname: string, domain: string) {
 }
 
 async function rdap(domain: string): Promise<{ registeredOn?: string; registrar?: string } | null> {
+  // Evals and offline tests can skip the live registry (it only times out in a sandbox).
+  if (process.env.SECONDLOOK_NO_RDAP === "1") return null;
   const ctrl = new AbortController();
   const timer = setTimeout(() => ctrl.abort(), 3500);
   try {

@@ -9,7 +9,8 @@
     "lint": "eslint",
     "check": "tsx scripts/check-nvidia.ts",
     "eval": "tsx scripts/eval.ts",
-    "generate": "tsx scripts/generate-dataset.ts"
+    "generate": "tsx scripts/generate-dataset.ts",
+    "eval:rules": "SECONDLOOK_NO_RDAP=1 tsx scripts/eval.ts --offline"
   },
   "dependencies": {
     "@fontsource-variable/bricolage-grotesque": "^5.3.0",
