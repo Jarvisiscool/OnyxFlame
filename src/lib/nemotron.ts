@@ -22,10 +22,10 @@ export function baseUrl() {
 export const BASE_URL = baseUrl();
 
 /** Small, fast model: triages every incoming message. */
-export const FAST_MODEL = process.env.NEMOTRON_FAST_MODEL || "nvidia/nvidia-nemotron-nano-9b-v2";
+export const FAST_MODEL = process.env.NEMOTRON_FAST_MODEL || "nvidia/nemotron-3.5-lightning-30b-a3b";
 
 /** Larger reasoning model: runs the tool-calling investigation on risky messages. */
-export const DEEP_MODEL = process.env.NEMOTRON_DEEP_MODEL || "nvidia/nemotron-3-super-120b-a12b";
+export const DEEP_MODEL = process.env.NEMOTRON_DEEP_MODEL || "nvidia/nemotron-3.5-super-vl-120b-a12b";
 
 /** Vision-language model for screenshots / QR codes (accepts OpenAI-style image_url content parts). */
 export const VISION_MODEL = process.env.NEMOTRON_VISION_MODEL || "nvidia/nemotron-3.5-super-vl-120b-a12b";
@@ -112,7 +112,7 @@ export function reasoningControlFor(model: string, url = baseUrl()): ReasoningCo
   if (isOpenRouter(url)) return "openrouter";
   const m = model.toLowerCase();
   // Nemotron 3 / 3.5 (Nano 30B-A3B, Super 120B-A12B, Super VL, Ultra): top-level chat_template_kwargs.enable_thinking
-  if (/nemotron-?3/.test(m)) return "chat_template_kwargs";
+  if (/nemotron-?3|nemotron-nano-3-/.test(m)) return "chat_template_kwargs";
   // Nemotron Nano 9B/12B v2 and Llama-3.3-Nemotron-Super-49B v1.5: /think and /no_think in the system prompt
   if (/nano-(9b|12b)-v2|nemotron-nano-.*v2|super-49b-v1[._]5/.test(m)) return "system_prompt";
   // Llama Nemotron v1 family: "detailed thinking on|off" system prompt

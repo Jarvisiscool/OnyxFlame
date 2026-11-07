@@ -93,7 +93,7 @@ async function main() {
   }
 
   // 2. Fast model candidates: pick the quickest that returns clean JSON.
-  const FAST_CANDIDATES = [...new Set(["nvidia/nemotron-3-nano-30b-a3b", "nvidia/nvidia-nemotron-nano-9b-v2", FAST_MODEL])].filter((m) => !available.length || available.includes(m) || m === FAST_MODEL);
+  const FAST_CANDIDATES = [...new Set(["nvidia/nemotron-3.5-lightning-30b-a3b", "nvidia/nemotron-nano-3-30b-a3b", "nvidia/nemotron-3.5-bolt-e4b", "nvidia/nemotron-3-nano-omni-30b-a3b-reasoning", "nvidia/nemotron-3-nano-30b-a3b", FAST_MODEL])].filter((m) => !available.length || available.includes(m) || m === FAST_MODEL);
   const fastResults: { model: string; res: ChatResult; json: boolean }[] = [];
   for (const model of FAST_CANDIDATES) {
     const res = await step(`fast candidate ${model}`, () =>
@@ -109,7 +109,7 @@ async function main() {
   if (bestFast && bestFast.model !== FAST_MODEL) rec.NEMOTRON_FAST_MODEL = bestFast.model;
 
   // 3. Deep model candidates: must call tools (natively, or as text the agent parses). Prefer Nemotron 3.5 Super.
-  const DEEP_CANDIDATES = [...new Set(["nvidia/nemotron-3.5-super-vl-120b-a12b", "nvidia/nemotron-3-super-120b-a12b", DEEP_MODEL])].filter((m) => !available.length || available.includes(m) || m === DEEP_MODEL);
+  const DEEP_CANDIDATES = [...new Set(["nvidia/nemotron-3.5-super-vl-120b-a12b", "nvidia/nemotron-3-ultra-550b-a55b", "nvidia/nemotron-3-super-120b-a12b", DEEP_MODEL])].filter((m) => !available.length || available.includes(m) || m === DEEP_MODEL);
   const deepResults: { model: string; res: ChatResult; tools: "native" | "content" | "none" }[] = [];
   for (const model of DEEP_CANDIDATES) {
     const res = await step(`deep candidate ${model} (native tools)`, () =>
