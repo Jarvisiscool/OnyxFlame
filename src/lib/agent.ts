@@ -60,7 +60,8 @@ const W_SAFE = { high: 0.35, medium: 0.15, low: 0.05 };
 function scoreSignals(signals: Evidence[]) {
   let s = 0;
   for (const e of signals) s += e.direction === "risk" ? W_RISK[e.weight] : -W_SAFE[e.weight];
-  return s;
+  // Round so 0.3 + 0.15 lands on the 0.45 threshold instead of 0.4499…
+  return Math.round(s * 1000) / 1000;
 }
 
 function dedupe(signals: Evidence[]) {
@@ -86,7 +87,7 @@ function toActions(ids: ActionId[]): SuggestedAction[] {
 function verifyContactFor(msg: InboxMessage, ind: Indicators, orgName?: string) {
   const org = findOrg(orgName ?? "") ?? findOrg(msg.displayName ?? "") ?? findOrg(ind.claimedOrgs[0] ?? "");
   if (org) return { org: org.org, how: org.safeContact, url: org.url };
-  if (matchPatterns(msg.body).matches[0]?.id === "family_emergency")
+  if (matchPatterns(msg.body).matches.find((m) => m.score >= 0.66)?.id === "family_emergency")
     return { org: "your family member", how: "Call them on the number you already have saved, or ask something only they would know" };
   return undefined;
 }
@@ -95,7 +96,28 @@ const sentence = (s: string) => s.trim().replace(/[.\s]+$/, "");
 const joinSentences = (xs: string[]) => xs.map(sentence).filter(Boolean).join(". ") + ".";
 
 /** Most persuasive evidence first: things the user can see for themselves beat network stats. */
-const PRIORITY = ["Lookalike domain", "Asks for your code", "Asks you to move money", "Caller ID can't be verified", "Asks for secrecy", "Brand-new domain", "Matches", "Sender doesn't match brand", "Reported by others", "Mass texting"];
+const PRIORITY = [
+  "Lookalike domain",
+  "Lookalike sender",
+  "Asks for your code",
+  "Asks you to move money",
+  "Asks for gift cards",
+  "Caller ID can't be verified",
+  "Asks for secrecy",
+  "Unverified callback number",
+  "Brand-new domain",
+  "Raw IP",
+  "Sender doesn't match brand",
+  "Link isn't the company's site",
+  "Matches",
+  "Asks for personal details",
+  "Fraud-alert format",
+  "Threatens a penalty",
+  "Asks you to scan",
+  "Moves the chat",
+  "Reported by others",
+  "Mass texting",
+];
 function priority(e: Evidence) {
   const i = PRIORITY.findIndex((p) => e.signal.startsWith(p));
   return W_RISK[e.weight] * 10 + (i === -1 ? 0 : PRIORITY.length - i);
@@ -105,9 +127,11 @@ function priority(e: Evidence) {
 export function heuristicVerdict(msg: InboxMessage, ind: Indicators, signals: Evidence[]): Verdict {
   const score = scoreSignals(signals);
   const risk: Risk = score >= 0.45 ? "scam" : score >= 0.15 ? "suspicious" : "safe";
+  // No signals at all means little was checked: say "safe" with modest confidence, not 70%.
   const confidence =
-    risk === "scam" ? Math.min(0.97, 0.62 + (score - 0.45) * 0.45) : risk === "suspicious" ? 0.5 + Math.min(0.15, score * 0.3) : signals.length === 0 ? 0.7 : Math.min(0.95, 0.65 - score * 0.6);
-  const top = matchPatterns(msg.body).matches[0];
+    risk === "scam" ? Math.min(0.97, 0.62 + (score - 0.45) * 0.45) : risk === "suspicious" ? 0.5 + Math.min(0.15, score * 0.3) : signals.length === 0 ? 0.6 : Math.min(0.95, 0.65 - score * 0.6);
+  // Only a strong playbook match (2 of 3 cues or better) names the scam type.
+  const top = matchPatterns(msg.body).matches.find((m) => m.score >= 0.66);
   const vc = verifyContactFor(msg, ind);
   const riskSignals = signals.filter((s) => s.direction === "risk").sort((a, b) => priority(b) - priority(a));
   const safeSignals = signals.filter((s) => s.direction === "safe");
@@ -118,11 +142,20 @@ export function heuristicVerdict(msg: InboxMessage, ind: Indicators, signals: Ev
         : top?.id === "family_emergency"
           ? "This is probably not your family. Don't send money."
           : "This looks like a scam. Don't respond." : risk === "suspicious" ? "Something's off here. Verify before you reply." : "This message looks legitimate.";
+  // Only claim what is true of this message: some safe messages do ask for money (a saved contact) or have links.
+  const asksSomething = ind.requestsPayment || ind.asksForPersonalInfo || ind.asksForCode;
+  const safeTail = asksSomething
+    ? "It does ask for something, so if anything feels off, check with the sender another way first."
+    : safeSignals.some((s) => s.signal === "Nothing to act on")
+      ? ""
+      : "Nothing in it asks for money, codes or personal details.";
   const explanation =
     risk === "safe"
       ? safeSignals.length
-        ? `${joinSentences(safeSignals.map((s) => s.detail).slice(0, 2))} Nothing in it asks for money, codes or personal details.`
-        : "It doesn't contain links, requests for money, codes or personal details, and nothing about the sender raises concern."
+        ? `${joinSentences(safeSignals.map((s) => s.detail).slice(0, 2))} ${safeTail}`.trim()
+        : asksSomething || ind.urls.length || ind.asksToCall
+          ? `None of my checks found a problem with the sender${ind.urls.length ? " or the link" : ""}. ${safeTail}`.trim()
+          : "It doesn't contain links, requests for money, codes or personal details. I had little to check, so treat this as a light check rather than a guarantee."
       : joinSentences(riskSignals.map((s) => s.detail).slice(0, 2));
   return {
     risk,
@@ -248,7 +281,15 @@ export async function runAnalysis(msg: InboxMessage, emit: Emit, opts: AnalyzeOp
       triage = { risk: "suspicious", confidence: 0.5, reason: "Triage unavailable" };
     }
   } else {
-    const s = scoreSignals(matchPatterns(redacted).signals) + (ind.urls.length ? 0.1 : 0) + (ind.asksForCode ? 0.3 : 0) + ind.urgency.length * 0.05 + ind.paymentMethods.length * 0.1;
+    const s =
+      scoreSignals(matchPatterns(redacted).signals) +
+      (ind.urls.length ? 0.1 : 0) +
+      (ind.asksForCode || ind.secrecy || ind.giftCardPayment || ind.moveMoney ? 0.3 : 0) +
+      (ind.callbackAlarm || ind.qrCode || ind.offPlatformChat.length || ind.asksForPersonalInfo ? 0.15 : 0) +
+      (Math.min(ind.urgencyCount, 6) + ind.threats.length) * 0.05 +
+      (ind.capsRatio > 0.6 ? 0.1 : 0) +
+      ind.paymentMethods.length * 0.1 +
+      (ind.wrongNameGreeting ? 0.05 : 0);
     const risk: Risk = s >= 0.45 ? "scam" : s >= 0.12 ? "suspicious" : "safe";
     triage = {
       risk,
