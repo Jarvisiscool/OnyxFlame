@@ -1,26 +1,108 @@
 @import "tailwindcss";
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
+@theme {
+  --color-ink: #191c33;
+  --color-ink-soft: #3a3f5c;
+  --color-muted: #5e6580;
+  --color-paper: #e9ecf3;
+  --color-panel: #ffffff;
+  --color-line: #d3d8e4;
+  --color-wash: #f4f6fa;
+  --color-scam: #c8005f;
+  --color-scam-wash: #fbe6ef;
+  --color-caution: #a35f00;
+  --color-caution-wash: #fdf1dc;
+  --color-safe: #0b7a5c;
+  --color-safe-wash: #e1f4ec;
+  --color-agent: #3640c9;
+  --color-agent-wash: #e8e9fb;
+  --color-nv: #4f8a00;
+
+  --font-display: "Bricolage Grotesque Variable", ui-sans-serif, system-ui, sans-serif;
+  --font-sans: "Public Sans Variable", ui-sans-serif, system-ui, sans-serif;
+  --font-mono: "JetBrains Mono Variable", ui-monospace, monospace;
 }
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+html,
+body {
+  background: var(--color-paper);
+  color: var(--color-ink);
+  font-family: var(--font-sans);
+  font-feature-settings: "tnum" 0;
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+:focus-visible {
+  outline: 2px solid var(--color-agent);
+  outline-offset: 2px;
+  border-radius: 6px;
+}
+
+.tnum {
+  font-variant-numeric: tabular-nums;
+}
+
+/* The one orchestrated moment: a new message drops in as a notification. */
+@keyframes drop-in {
+  0% {
+    transform: translateY(-120%);
+    opacity: 0;
+  }
+  60% {
+    transform: translateY(6%);
+    opacity: 1;
+  }
+  100% {
+    transform: translateY(0);
+  }
+}
+.animate-drop-in {
+  animation: drop-in 520ms cubic-bezier(0.2, 0.8, 0.2, 1) both;
+}
+
+@keyframes sheet-up {
+  from {
+    transform: translateY(24px);
+    opacity: 0;
+  }
+  to {
+    transform: none;
+    opacity: 1;
+  }
+}
+.animate-sheet-up {
+  animation: sheet-up 360ms cubic-bezier(0.2, 0.8, 0.2, 1) both;
+}
+
+@keyframes scan {
+  0% {
+    background-position: -200% 0;
+  }
+  100% {
+    background-position: 200% 0;
+  }
+}
+.scan-line {
+  background: linear-gradient(90deg, transparent 0%, var(--color-agent) 50%, transparent 100%);
+  background-size: 50% 100%;
+  background-repeat: no-repeat;
+  animation: scan 1.4s linear infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .animate-drop-in,
+  .animate-sheet-up {
+    animation: none;
+  }
+  .scan-line {
+    animation: none;
+    background: var(--color-agent);
+    opacity: 0.4;
   }
 }
 
-body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+.phone-scroll {
+  scrollbar-width: none;
+}
+.phone-scroll::-webkit-scrollbar {
+  display: none;
 }

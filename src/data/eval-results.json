@@ -1,0 +1,46 @@
+{
+  "updatedAt": "2026-11-07T21:06:08.871Z",
+  "datasetSize": 40,
+  "models": {
+    "fast": "nvidia/nvidia-nemotron-nano-9b-v2",
+    "deep": "nvidia/nemotron-3-super-120b-a12b"
+  },
+  "rules": {
+    "n": 40,
+    "accuracy": 0.925,
+    "precision": 0.9523809523809523,
+    "recall": 0.9090909090909091,
+    "f1": 0.9302325581395349,
+    "falsePositiveRate": 0.05555555555555555,
+    "suspiciousShare": 0.3,
+    "fastPathShare": 0.325,
+    "avgMs": 3,
+    "confusion": {
+      "tp": 20,
+      "fp": 1,
+      "tn": 17,
+      "fn": 2
+    },
+    "misses": [
+      {
+        "id": "e13",
+        "label": "scam",
+        "got": "safe",
+        "body": "Hi Jessica, it's Kevin from the conference. Are we still meeting for coffee tomorrow?"
+      },
+      {
+        "id": "e16",
+        "label": "scam",
+        "got": "safe",
+        "body": "This is Officer Grant with the Dallas County Sheriff. You missed jury duty and there is a "
+      },
+      {
+        "id": "l11",
+        "label": "legit",
+        "got": "suspicious",
+        "body": "Your Chase card ending 8812 was used for $54.20 at H-E-B. No action needed if this was you"
+      }
+    ]
+  },
+  "nemotron": null
+}
