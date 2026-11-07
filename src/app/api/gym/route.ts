@@ -12,7 +12,13 @@ Mix scams and legitimate messages (about 60/40). Make them hard: legit ones can 
 Output JSON only: {"cards":[{"from":"...","displayName":"optional","body":"...","isScam":true|false,"tells":["2-3 short clues, max 10 words each"]}]}`;
 
 export async function POST(req: Request) {
-  const { seenTypes = [] } = (await req.json().catch(() => ({}))) as { seenTypes?: string[] };
+  const body = ((await req.json().catch(() => ({}))) ?? {}) as { seenTypes?: unknown };
+  // seenTypes comes from the client: keep it short and plain before it reaches a prompt.
+  const seenTypes = (Array.isArray(body.seenTypes) ? body.seenTypes : [])
+    .filter((t): t is string => typeof t === "string")
+    .map((t) => t.replace(/[^\w\s'&/-]/g, "").trim().slice(0, 40))
+    .filter(Boolean)
+    .slice(0, 6);
   const shuffled = [...GYM_DECK].sort(() => Math.random() - 0.5);
   if (!hasNvidiaKey()) return Response.json({ cards: shuffled, source: "offline" });
 
@@ -21,6 +27,8 @@ export async function POST(req: Request) {
       model: DEEP_MODEL,
       temperature: 0.9,
       maxTokens: 2200,
+      thinking: "off",
+      timeoutMs: 25_000,
       messages: [
         { role: "system", content: SYSTEM },
         {
