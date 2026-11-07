@@ -5,7 +5,12 @@ import { SIMULATED_REGISTRY } from "@/data/simulated-network";
 const RISKY_TLDS = ["top", "xyz", "club", "icu", "click", "link", "live", "online", "site", "shop", "vip", "win", "zip", "mobi", "tk", "ml", "cn", "ru", "support", "help", "cc"];
 const SHORTENERS = ["bit.ly", "tinyurl.com", "t.co", "is.gd", "rb.gy", "cutt.ly", "shorturl.at", "ow.ly", "goo.gl", "t.ly"];
 
-const HOMOGLYPHS: Record<string, string> = { "0": "o", "1": "l", "3": "e", "4": "a", "5": "s", "7": "t", "@": "a", "$": "s" };
+const HOMOGLYPHS: Record<string, string> = {
+  "0": "o", "1": "l", "3": "e", "4": "a", "5": "s", "7": "t", "@": "a", "$": "s",
+  // Cyrillic and Greek letters that render like Latin ones (pаypal.com with a Cyrillic "а")
+  "а": "a", "е": "e", "о": "o", "р": "p", "с": "c", "у": "y", "х": "x", "і": "i", "ј": "j", "ԁ": "d", "ѕ": "s", "ӏ": "l", "һ": "h", "ԛ": "q", "ԝ": "w",
+  "α": "a", "ο": "o", "ρ": "p", "ν": "v", "ι": "i", "κ": "k", "τ": "t", "ɡ": "g",
+};
 
 export interface LinkReport {
   url: string;
@@ -64,32 +69,59 @@ export function registrable(hostname: string) {
   return parts.slice(-2).join(".");
 }
 
-function brandCheck(hostname: string, domain: string) {
+const BRAND_SUFFIXES = /^(?:|care|id|support|secure|security|login|signin|verify|help|billing|bill|pay|account|alert|alerts|service|online|mail|refund|refunds|gift|store|rewards|app|center|team|update|fraud|bank|us|usa)$/;
+/** Generic alias words that would match unrelated sites. */
+const ALIAS_STOP = new Set(["magenta", "prime", "tollway"]);
+
+/** Brand tokens for an org: its domain labels plus single-word aliases ("e-zpassiag.com" → also "ezpass"). */
+function brandTokens(org: (typeof DIRECTORY)[number]) {
+  const fromDomains = org.domains.map((d) => normalize(d.split(".")[0]));
+  const fromAliases = org.aliases.filter((a) => !a.includes(" ") && !ALIAS_STOP.has(a)).map(normalize);
+  return [...new Set([...fromDomains, ...fromAliases])].filter((b) => b.length >= 3);
+}
+
+/**
+ * Does this host belong to, or impersonate, a brand in the directory?
+ * Checks every label of the hostname, so subdomain tricks like
+ * "pnc.com.secure-login.xyz" or "wellsfargo.account-restore.live" are caught.
+ */
+export function brandCheck(hostname: string, domain: string): { officialFor?: string; impersonates?: string; lookalikeReason?: string } {
   for (const org of DIRECTORY) {
     if (org.domains.some((d) => domain === d || hostname === d || hostname.endsWith("." + d))) {
       return { officialFor: org.org };
     }
   }
   const label = domain.split(".")[0];
-  const segments = hostname.split(/[.-]/).map(normalize);
   const whole = normalize(label);
+  // Hyphen/dot separated pieces, plus each full label with hyphens removed ("t-mobile" → "tmobile").
+  const labels = hostname.split(".").slice(0, -1);
+  const pieces = [...new Set([...hostname.split(/[.-]/).map(normalize), ...labels.map(normalize)])].filter(Boolean);
   for (const org of DIRECTORY) {
     for (const d of org.domains) {
-      const brand = normalize(d.split(".")[0]);
-      if (hostname.includes(d)) {
-        return { impersonates: org.org, lookalikeReason: `puts "${d}" inside a different domain (${domain})` };
+      if (hostname.includes(d + ".") || hostname.includes(d + "-")) {
+        return { impersonates: org.org, lookalikeReason: `starts with "${d}" to look official, but the real domain is ${domain}` };
       }
+    }
+    for (const brand of brandTokens(org)) {
       if (brand.length <= 4) {
-        if (segments.includes(brand)) {
+        if (pieces.includes(brand)) {
           return { impersonates: org.org, lookalikeReason: `uses the brand name "${brand}" on an unrelated domain` };
         }
-      } else {
-        if (whole.includes(brand)) {
-          return { impersonates: org.org, lookalikeReason: `wraps the brand name "${brand}" in extra words` };
-        }
-        if (levenshtein(whole, brand) <= 2) {
-          return { impersonates: org.org, lookalikeReason: `is a misspelling of ${d}` };
-        }
+        continue;
+      }
+      // A piece that is the brand, starts with it, or (6+ letters) contains it. Five-letter brands need
+      // a scam-style suffix so "applebees" and "purchase" don't count as Apple or Chase.
+      const hit = pieces.find(
+        (p) => p === brand || (brand.length >= 6 ? p.includes(brand) : p.startsWith(brand) && BRAND_SUFFIXES.test(p.slice(brand.length))),
+      );
+      if (hit) {
+        return {
+          impersonates: org.org,
+          lookalikeReason: hit === brand && labels.length > 1 && whole !== brand ? `hides the brand name "${brand}" in a subdomain of ${domain}` : `wraps the brand name "${brand}" in extra words`,
+        };
+      }
+      if (whole.length >= 4 && brand.length >= 5 && levenshtein(whole, brand) <= (brand.length >= 7 ? 2 : 1)) {
+        return { impersonates: org.org, lookalikeReason: `is a misspelling of the ${org.org} name` };
       }
     }
   }
@@ -124,7 +156,15 @@ export async function checkLink(url: string): Promise<{ report: LinkReport; sign
   const { hostname, https } = parseHost(url);
   const domain = registrable(hostname);
   const tld = domain.split(".").pop() ?? "";
-  const brand = brandCheck(hostname, domain);
+  // Brand-match on the host as written: new URL() turns "pаypal.com" into punycode, which hides the lookalike.
+  const rawHost = url.replace(/^https?:\/\//i, "").split(/[/?#:]/)[0].toLowerCase().replace(/^www\./, "");
+  const unicodeHost = /[^\x00-\x7f]/.test(rawHost) ? rawHost : undefined;
+  const uniBrand = unicodeHost ? brandCheck(unicodeHost, registrable(unicodeHost)) : undefined;
+  const brand = uniBrand
+    ? uniBrand.impersonates || uniBrand.officialFor
+      ? { impersonates: uniBrand.impersonates ?? uniBrand.officialFor, lookalikeReason: "swaps in look-alike letters from another alphabet" }
+      : {}
+    : brandCheck(hostname, domain);
   const report: LinkReport = {
     url,
     hostname,
@@ -134,12 +174,14 @@ export async function checkLink(url: string): Promise<{ report: LinkReport; sign
     riskyTld: RISKY_TLDS.includes(tld),
     shortener: SHORTENERS.includes(hostname),
     ipAddress: /^\d+\.\d+\.\d+\.\d+$/.test(hostname),
-    punycode: hostname.includes("xn--"),
+    punycode: hostname.includes("xn--") || Boolean(unicodeHost),
     usesHttps: https,
   };
 
   const sim = SIMULATED_REGISTRY[domain];
-  if (sim) {
+  if (report.ipAddress) {
+    // Bare IPs have no domain registration to look up.
+  } else if (sim) {
     report.registrySource = "simulated";
     report.registeredOn = new Date(Date.now() - sim.ageDays * 86_400_000).toISOString();
     report.registrar = sim.registrar;
@@ -158,15 +200,15 @@ export async function checkLink(url: string): Promise<{ report: LinkReport; sign
   const src = report.registrySource === "rdap" ? "RDAP domain registry (live)" : report.registrySource === "simulated" ? "Domain registry (simulated for demo domains)" : "Link analysis";
   const signals: Evidence[] = [];
   if (report.officialFor) {
-    signals.push({ signal: "Official domain", detail: `${domain} belongs to ${report.officialFor}`, weight: "high", direction: "safe", source: "Trusted directory" });
+    signals.push({ signal: "Official domain", detail: `The link goes to ${domain}, which belongs to ${report.officialFor}`, weight: "high", direction: "safe", source: "Trusted directory" });
   }
   if (report.impersonates) {
-    signals.push({ signal: "Lookalike domain", detail: `${domain} ${report.lookalikeReason}. It is not owned by ${report.impersonates}.`, weight: "high", direction: "risk", source: "Lookalike detector" });
+    signals.push({ signal: "Lookalike domain", detail: `The link goes to ${unicodeHost ?? hostname}, which ${report.lookalikeReason}. It is not owned by ${report.impersonates}.`, weight: "high", direction: "risk", source: "Lookalike detector" });
   }
   if (report.ageDays !== undefined) {
-    if (report.ageDays < 30) signals.push({ signal: "Brand-new domain", detail: `${domain} was registered ${report.ageDays} day${report.ageDays === 1 ? "" : "s"} ago`, weight: "high", direction: "risk", source: src });
-    else if (report.ageDays < 180) signals.push({ signal: "Young domain", detail: `${domain} is only ${report.ageDays} days old`, weight: "medium", direction: "risk", source: src });
-    else if (report.ageDays > 3650) signals.push({ signal: "Long-established domain", detail: `${domain} has been registered for ${Math.floor(report.ageDays / 365)} years`, weight: "medium", direction: "safe", source: src });
+    if (report.ageDays < 30) signals.push({ signal: "Brand-new domain", detail: `The site ${domain} was registered ${report.ageDays} day${report.ageDays === 1 ? "" : "s"} ago`, weight: "high", direction: "risk", source: src });
+    else if (report.ageDays < 180) signals.push({ signal: "Young domain", detail: `The site ${domain} is only ${report.ageDays} days old`, weight: "medium", direction: "risk", source: src });
+    else if (report.ageDays > 3650) signals.push({ signal: "Long-established domain", detail: `The site ${domain} has been registered for ${Math.floor(report.ageDays / 365)} years`, weight: "medium", direction: "safe", source: src });
   }
   if (report.riskyTld) signals.push({ signal: "High-abuse ending", detail: `.${tld} domains are cheap and common in scam texts`, weight: "medium", direction: "risk", source: "Link analysis" });
   if (report.shortener) signals.push({ signal: "Hidden destination", detail: `${hostname} is a link shortener that hides where it goes`, weight: "medium", direction: "risk", source: "Link analysis" });

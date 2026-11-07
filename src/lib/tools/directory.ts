@@ -158,6 +158,86 @@ export const DIRECTORY: OrgEntry[] = [
     neverAsks: ["a customs or redelivery fee by text link"],
   },
   {
+    org: "Venmo",
+    aliases: ["venmo"],
+    domains: ["venmo.com"],
+    safeContact: "Open the Venmo app yourself",
+    url: "https://venmo.com",
+    neverAsks: ["your verification code", "you to call a number to stop a payment"],
+  },
+  {
+    org: "Cash App",
+    aliases: ["cash app", "cashapp"],
+    domains: ["cash.app", "cash.me", "squareup.com"],
+    safeContact: "Open Cash App yourself and use in-app support",
+    url: "https://cash.app",
+    neverAsks: ["your PIN or sign-in code", "a payment to receive money"],
+  },
+  {
+    org: "Capital One",
+    aliases: ["capital one"],
+    domains: ["capitalone.com"],
+    safeContact: "Call the number on the back of your Capital One card",
+    url: "https://www.capitalone.com",
+    neverAsks: ["your one-time code", "you to move money to protect it"],
+  },
+  {
+    org: "Google",
+    aliases: ["google", "google voice"],
+    domains: ["google.com", "g.co"],
+    safeContact: "Go to myaccount.google.com yourself",
+    url: "https://myaccount.google.com",
+    neverAsks: ["you to forward a Google verification code to anyone", "payment in Google Play cards"],
+  },
+  {
+    org: "Best Buy / Geek Squad",
+    aliases: ["geek squad", "geeksquad", "best buy", "bestbuy"],
+    domains: ["bestbuy.com", "geeksquad.com"],
+    safeContact: "Sign in at bestbuy.com yourself or call the number on your receipt",
+    url: "https://www.bestbuy.com",
+    neverAsks: ["you to call a number from an email to cancel a renewal", "remote access to your computer for a refund"],
+  },
+  {
+    org: "Walmart",
+    aliases: ["walmart"],
+    domains: ["walmart.com"],
+    safeContact: "Open the Walmart app yourself",
+    url: "https://www.walmart.com",
+    neverAsks: ["you to claim a gift card through a text link"],
+  },
+  {
+    org: "TxTag",
+    aliases: ["txtag", "tx tag"],
+    domains: ["txtag.org"],
+    safeContact: "Sign in at txtag.org yourself",
+    url: "https://www.txtag.org",
+    neverAsks: ["toll payments through a text-message link"],
+  },
+  {
+    org: "E-ZPass",
+    aliases: ["e-zpass", "ezpass", "e-z pass"],
+    domains: ["e-zpassiag.com", "e-zpassny.com", "ezpassnj.com"],
+    safeContact: "Sign in to your state's E-ZPass site by typing it yourself",
+    url: "https://www.e-zpassiag.com",
+    neverAsks: ["toll payments through a text-message link"],
+  },
+  {
+    org: "Federal Student Aid",
+    aliases: ["federal student aid", "student aid", "dept of education", "department of education", "dept. of education"],
+    domains: ["studentaid.gov", "ed.gov"],
+    safeContact: "Sign in at studentaid.gov yourself, or call your loan servicer from its official site",
+    url: "https://studentaid.gov",
+    neverAsks: ["a fee to apply for loan forgiveness", "you to call a number from a text to enroll"],
+  },
+  {
+    org: "Instagram",
+    aliases: ["instagram"],
+    domains: ["instagram.com", "facebook.com", "meta.com"],
+    safeContact: "Use the Instagram app's own account recovery",
+    url: "https://help.instagram.com",
+    neverAsks: ["you to send someone else's login code"],
+  },
+  {
     org: "UPS",
     aliases: ["ups"],
     domains: ["ups.com"],
@@ -167,23 +247,39 @@ export const DIRECTORY: OrgEntry[] = [
   },
 ];
 
+/** Match an organization name or caller ID to the directory, by whole words ("Melissa" is not "ssa"). */
 export function findOrg(name: string): OrgEntry | undefined {
   const q = name.toLowerCase().trim();
   if (!q) return undefined;
+  const words = (s: string) => ` ${s.replace(/[^a-z0-9&]+/g, " ").trim()} `;
+  const wq = words(q);
   return DIRECTORY.find(
     (o) =>
       o.org.toLowerCase() === q ||
-      o.aliases.some((a) => a === q || q.includes(a) || (a.length > 3 && a.includes(q))),
+      words(o.org.toLowerCase()) === wq ||
+      o.aliases.some((a) => a === q || wq.includes(words(a))),
   );
 }
 
-/** Which known organizations does this text claim to be from or mention? */
+/**
+ * Which known organizations does this text claim to be from or speak for, in order of appearance?
+ * Pure mentions don't count: "Apple gift cards", "Google Play cards", "my Google Voice".
+ */
 export function claimedOrgs(text: string): OrgEntry[] {
-  const lower = text.toLowerCase();
-  return DIRECTORY.filter((o) =>
-    o.aliases.some((a) => {
-      const re = new RegExp(`(^|[^a-z0-9])${a.replace(/[.*+?^${}()|[\]\\-]/g, "\\$&")}([^a-z0-9]|$)`, "i");
-      return re.test(lower);
-    }),
-  );
+  const found: { org: OrgEntry; at: number }[] = [];
+  for (const o of DIRECTORY) {
+    let first = -1;
+    for (const a of o.aliases) {
+      const re = new RegExp(`(^|[^a-z0-9])${a.replace(/[.*+?^${}()|[\]\\-]/g, "\\$&")}(?=[^a-z0-9]|$)`, "gi");
+      for (const m of text.matchAll(re)) {
+        const start = (m.index ?? 0) + m[1].length;
+        const before = text.slice(Math.max(0, start - 6), start);
+        const after = text.slice(start + a.length, start + a.length + 14);
+        const mention = /\bmy\s+$/i.test(before) || /^\s+(?:e-?)?(?:gift|play|itunes|store\b)/i.test(after);
+        if (!mention && (first === -1 || start < first)) first = start;
+      }
+    }
+    if (first !== -1) found.push({ org: o, at: first });
+  }
+  return found.sort((x, y) => x.at - y.at).map((f) => f.org);
 }
