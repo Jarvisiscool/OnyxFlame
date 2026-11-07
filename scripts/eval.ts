@@ -7,7 +7,8 @@
  *
  * Two sets are scored separately:
  *   dev     = src/data/eval-set.ts (+ eval-set.generated.json if present). Tune against this one.
- *   holdout = src/data/eval-holdout.ts. Written before tuning; the honest number.
+ *   holdout = src/data/eval-holdout.ts. Written before tuning (same author as the rules, so optimistic).
+ *   redteam = src/data/eval-redteam.ts. Written after tuning to attack the rules; never tuned on.
  *
  * Writes src/data/eval-results.json. The Results tab reads `rules`, `nemotron`
  * (dev set), `datasetSize`, `models` and `updatedAt`; holdout lives under `holdout`.
@@ -20,6 +21,7 @@ import { runAnalysis } from "@/lib/agent";
 import { hasNvidiaKey, DEEP_MODEL, FAST_MODEL } from "@/lib/nemotron";
 import { EVAL_SET } from "@/data/eval-set";
 import { HOLDOUT_SET } from "@/data/eval-holdout";
+import { REDTEAM_SET } from "@/data/eval-redteam";
 import type { AgentEvent, InboxMessage } from "@/lib/types";
 
 const GENERATED = path.join(process.cwd(), "src/data/eval-set.generated.json");
@@ -59,8 +61,13 @@ async function evaluate(set: Labeled[], offline: boolean, tag: string) {
     else tn++;
     const pRisk = v.risk === "safe" ? 1 - v.confidence : v.risk === "scam" ? v.confidence : 0.5 + (v.confidence - 0.5) * 0.5;
     brier += (pRisk - (isScam ? 1 : 0)) ** 2;
-    if (isScam === flagged) (confRight += v.confidence), nRight++;
-    else (confWrong += v.confidence), nWrong++;
+    if (isScam === flagged) {
+      confRight += v.confidence;
+      nRight++;
+    } else {
+      confWrong += v.confidence;
+      nWrong++;
+    }
     if (isScam !== flagged) misses.push({ id: m.id, label: m.label, got: v.risk, confidence: v.confidence, body: m.body.slice(0, 110) });
     if (VERBOSE) console.log(`\n  ${isScam === flagged ? "✓" : "✗"} ${m.id} [${m.label}] → ${v.risk} ${Math.round(v.confidence * 100)}%  ${m.body.slice(0, 70)}`);
     else if (process.stdout.isTTY) process.stdout.write(`\r  ${tag} ${offline ? "rules" : "nemotron"} ${i + 1}/${set.length}`);
@@ -99,15 +106,18 @@ const fmt = (r: Metrics | null) =>
 (async () => {
   const dev = loadDev();
   const holdout = prep(HOLDOUT_SET);
+  const redteam = prep(REDTEAM_SET);
   const offlineOnly = process.argv.includes("--offline") || !hasNvidiaKey();
   const count = (s: Labeled[]) => `${s.length} messages, ${s.filter((m) => m.label === "scam").length} scams`;
-  console.log(`Dev set: ${count(dev)}  ·  Holdout: ${count(holdout)}`);
+  console.log(`Dev set: ${count(dev)}  ·  Holdout: ${count(holdout)}  ·  Red team: ${count(redteam)}`);
   const previous = existsSync(OUT) ? JSON.parse(readFileSync(OUT, "utf8")) : {};
 
   const rules = await evaluate(dev, true, "dev");
   const holdoutRules = await evaluate(holdout, true, "holdout");
   const nemotron = offlineOnly ? (previous.nemotron ?? null) : await evaluate(dev, false, "dev");
   const holdoutNemotron = offlineOnly ? (previous.holdout?.nemotron ?? null) : await evaluate(holdout, false, "holdout");
+  const redteamRules = await evaluate(redteam, true, "redteam");
+  const redteamNemotron = offlineOnly ? (previous.redteam?.nemotron ?? null) : await evaluate(redteam, false, "redteam");
 
   const result = {
     updatedAt: new Date().toISOString(),
@@ -116,14 +126,18 @@ const fmt = (r: Metrics | null) =>
     rules,
     nemotron,
     holdout: { datasetSize: holdout.length, rules: holdoutRules, nemotron: holdoutNemotron },
+    redteam: { datasetSize: redteam.length, rules: redteamRules, nemotron: redteamNemotron },
   };
   writeFileSync(OUT, JSON.stringify(result, null, 2) + "\n");
   console.log(`Dev      rules    : ${fmt(rules)}`);
   console.log(`Dev      nemotron : ${fmt(nemotron)}`);
   console.log(`Holdout  rules    : ${fmt(holdoutRules)}`);
   console.log(`Holdout  nemotron : ${fmt(holdoutNemotron)}`);
+  console.log(`Red team rules    : ${fmt(redteamRules)}`);
+  console.log(`Red team nemotron : ${fmt(redteamNemotron)}`);
   const show = (tag: string, r: Metrics) => r.misses.forEach((m) => console.log(`  ${tag} miss ${m.id} [${m.label}→${m.got}] ${m.body}`));
   show("dev", rules);
   show("holdout", holdoutRules);
+  show("redteam", redteamRules);
   console.log(`Saved → ${path.relative(process.cwd(), OUT)}`);
 })();
