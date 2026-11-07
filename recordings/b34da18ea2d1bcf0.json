@@ -1,0 +1,501 @@
+{
+  "key": "b34da18ea2d1bcf0",
+  "message": {
+    "id": "safe_account-1794089815491",
+    "channel": "voicemail",
+    "from": "+1 (877) 555-0199",
+    "displayName": "PNC Bank",
+    "redactedBody": "Hello, this is Daniel with the PNC Fraud Prevention team. We flagged unusual activity on your checking account. To protect your funds, you'll need to move your balance into a secure holding account we've set up for you. Call us back immediately at 877-555-0199. For your safety, do not discuss this with branch staff, as an internal investigation is underway."
+  },
+  "recordedAt": "2026-11-07T22:17:09.928Z",
+  "events": [
+    {
+      "type": "start",
+      "mode": "live",
+      "models": {
+        "fast": "nvidia/nemotron-3.5-lightning-30b-a3b",
+        "deep": "nvidia/nemotron-3.5-super-vl-120b-a12b"
+      },
+      "t": 1794089821558,
+      "budgetMs": 25000
+    },
+    {
+      "type": "redaction",
+      "redacted": "Hello, this is Daniel with the PNC Fraud Prevention team. We flagged unusual activity on your checking account. To protect your funds, you'll need to move your balance into a secure holding account we've set up for you. Call us back immediately at 877-555-0199. For your safety, do not discuss this with branch staff, as an internal investigation is underway.",
+      "items": [],
+      "t": 1794089821558
+    },
+    {
+      "type": "llm_call",
+      "model": "nvidia/nemotron-3.5-lightning-30b-a3b",
+      "purpose": "triage",
+      "ms": 583,
+      "tokens": {
+        "promptTokens": 300,
+        "completionTokens": 34,
+        "totalTokens": 334
+      },
+      "toolCalls": 0,
+      "format": "none",
+      "thinking": "off",
+      "t": 1794089822142
+    },
+    {
+      "type": "triage",
+      "model": "nvidia/nemotron-3.5-lightning-30b-a3b",
+      "risk": "scam",
+      "confidence": 0.95,
+      "reason": "Fraud alert demands money movement, threatens investigation, uses official name to pressure victim",
+      "ms": 584,
+      "t": 1794089822142,
+      "usage": {
+        "promptTokens": 300,
+        "completionTokens": 34,
+        "totalTokens": 334
+      }
+    },
+    {
+      "type": "route",
+      "decision": "escalate",
+      "reason": "Escalating to the deep investigator: claims to be PNC Bank, triage flagged scam.",
+      "t": 1794089822142
+    },
+    {
+      "type": "llm_call",
+      "model": "nvidia/nemotron-3.5-super-vl-120b-a12b",
+      "purpose": "investigate",
+      "turn": 0,
+      "ms": 1670,
+      "tokens": {
+        "promptTokens": 1931,
+        "completionTokens": 267,
+        "totalTokens": 2198,
+        "reasoningTokens": 120
+      },
+      "toolCalls": 4,
+      "format": "native",
+      "thinking": "low",
+      "t": 1794089823813
+    },
+    {
+      "type": "plan",
+      "model": "nvidia/nemotron-3.5-super-vl-120b-a12b",
+      "text": "Extract message indicators, check the sender number's carrier reputation, look up PNC Bank's official contact details, and compare the message against known scam playbooks.",
+      "steps": [
+        "Extract message indicators, check the sender number's carrier reputation, look up PNC Bank's official contact details, and compare the message against known scam playbooks"
+      ],
+      "source": "model",
+      "t": 1794089823813,
+      "ms": 1670,
+      "usage": {
+        "promptTokens": 1931,
+        "completionTokens": 267,
+        "totalTokens": 2198,
+        "reasoningTokens": 120
+      }
+    },
+    {
+      "type": "thought",
+      "model": "nvidia/nemotron-3.5-super-vl-120b-a12b",
+      "text": "Let me start by writing my one-line Plan, then call the tools. I need to:\n\n1. extract_indicators - parse the message\n2. check_sender - check the phone number +1 (877) 555-0199, claimed name \"PNC Bank\"\n3. check_link - no links in the message, so skip\n4. lookup_official_contact - for PNC Bank\n5. match_scam_patterns - compare against known scam playbooks\n\nLet me start with the Plan line and then call independent tools together.",
+      "t": 1794089823813,
+      "turn": 0
+    },
+    {
+      "type": "tool_call",
+      "id": "call-bdab44e8-743b-4c0f-9536-5d1b55364ae4",
+      "name": "extract_indicators",
+      "args": {},
+      "t": 1794089823814,
+      "origin": "model",
+      "turn": 0,
+      "format": "native",
+      "model": "nvidia/nemotron-3.5-super-vl-120b-a12b"
+    },
+    {
+      "type": "tool_call",
+      "id": "call-059c6a6f-8582-484c-80bb-3698c1c5b490",
+      "name": "check_sender",
+      "args": {
+        "sender": "+1 (877) 555-0199",
+        "claimed_name": "PNC Bank"
+      },
+      "t": 1794089823814,
+      "origin": "model",
+      "turn": 0,
+      "format": "native",
+      "model": "nvidia/nemotron-3.5-super-vl-120b-a12b"
+    },
+    {
+      "type": "tool_call",
+      "id": "call-5c8f30bd-815e-4e13-ae62-86bf015397d7",
+      "name": "lookup_official_contact",
+      "args": {
+        "organization": "PNC Bank"
+      },
+      "t": 1794089823814,
+      "origin": "model",
+      "turn": 0,
+      "format": "native",
+      "model": "nvidia/nemotron-3.5-super-vl-120b-a12b"
+    },
+    {
+      "type": "tool_call",
+      "id": "call-2eb8bc97-d554-45b0-9fd2-2c7eaf6f95bb",
+      "name": "match_scam_patterns",
+      "args": {},
+      "t": 1794089823814,
+      "origin": "model",
+      "turn": 0,
+      "format": "native",
+      "model": "nvidia/nemotron-3.5-super-vl-120b-a12b"
+    },
+    {
+      "type": "tool_result",
+      "id": "call-bdab44e8-743b-4c0f-9536-5d1b55364ae4",
+      "name": "extract_indicators",
+      "summary": "no links · claims PNC Bank · urgency: immediately · payment: holding account · pushes a callback number · asks for secrecy",
+      "signals": [
+        {
+          "signal": "Asks for secrecy",
+          "detail": "Tells you not to talk to anyone about it, a classic isolation tactic",
+          "weight": "high",
+          "direction": "risk",
+          "source": "Message analysis"
+        },
+        {
+          "signal": "Asks you to move money",
+          "detail": "Wants your money moved into a \"safe\" or new account. Real banks never ask this.",
+          "weight": "high",
+          "direction": "risk",
+          "source": "Message analysis"
+        },
+        {
+          "signal": "Unverified callback number",
+          "detail": "Asks you to call 877-555-0199 about a problem with your PNC Bank account. Scammers put their own number in fake alerts, so use the number on your card or the official app instead.",
+          "weight": "high",
+          "direction": "risk",
+          "source": "Message analysis"
+        }
+      ],
+      "data": {
+        "urls": [],
+        "phones": [
+          "877-555-0199"
+        ],
+        "emails": [],
+        "amounts": [],
+        "claimedOrgs": [
+          "PNC Bank"
+        ],
+        "urgency": [
+          "immediately"
+        ],
+        "paymentMethods": [
+          "holding account"
+        ],
+        "asksForCode": false,
+        "deliversCode": false,
+        "asksToReply": false,
+        "asksToCall": true,
+        "secrecy": true,
+        "threats": [],
+        "riskyRails": [],
+        "railsAsked": [],
+        "p2pApps": [],
+        "requestsPayment": false,
+        "giftCardPayment": false,
+        "moveMoney": true,
+        "asksForPersonalInfo": false,
+        "callbackAlarm": true,
+        "replyYesNo": false,
+        "qrCode": false,
+        "offPlatformChat": [],
+        "maxAmount": 0,
+        "urgencyCount": 1,
+        "capsRatio": 0.039711191335740074
+      },
+      "ms": 2,
+      "t": 1794089823816,
+      "origin": "model"
+    },
+    {
+      "type": "tool_result",
+      "id": "call-059c6a6f-8582-484c-80bb-3698c1c5b490",
+      "name": "check_sender",
+      "summary": "voip, 14d old, 96 reports",
+      "signals": [
+        {
+          "signal": "Not a registered sender",
+          "detail": "Claims to be PNC Bank, but comes from an ordinary phone number that isn't on PNC Bank's registered sender list",
+          "weight": "medium",
+          "direction": "risk",
+          "source": "Carrier network signals (simulated)"
+        },
+        {
+          "signal": "Caller ID can't be verified",
+          "detail": "Caller ID shows 'PNC Bank' but the number is not registered to PNC",
+          "weight": "high",
+          "direction": "risk",
+          "source": "Carrier network signals (simulated)"
+        },
+        {
+          "signal": "New number",
+          "detail": "This number was activated 14 days ago",
+          "weight": "medium",
+          "direction": "risk",
+          "source": "Carrier network signals (simulated)"
+        },
+        {
+          "signal": "Internet phone number",
+          "detail": "VoIP numbers are cheap to create and discard",
+          "weight": "low",
+          "direction": "risk",
+          "source": "Carrier network signals (simulated)"
+        },
+        {
+          "signal": "Reported by others",
+          "detail": "96 people reported this sender this week",
+          "weight": "high",
+          "direction": "risk",
+          "source": "Carrier network signals (simulated)"
+        }
+      ],
+      "data": {
+        "sender": "+1 (877) 555-0199",
+        "lineType": "voip",
+        "numberAgeDays": 14,
+        "attestation": "C",
+        "messages24h": 0,
+        "distinctRecipients24h": 380,
+        "spamReports7d": 96,
+        "note": "Caller ID shows 'PNC Bank' but the number is not registered to PNC"
+      },
+      "ms": 1,
+      "t": 1794089823817,
+      "origin": "model"
+    },
+    {
+      "type": "tool_result",
+      "id": "call-5c8f30bd-815e-4e13-ae62-86bf015397d7",
+      "name": "lookup_official_contact",
+      "summary": "PNC Bank: Call the number on the back of your PNC card, or type pnc.com yourself",
+      "signals": [],
+      "data": {
+        "org": "PNC Bank",
+        "officialDomains": [
+          "pnc.com"
+        ],
+        "safeContact": "Call the number on the back of your PNC card, or type pnc.com yourself",
+        "url": "https://www.pnc.com",
+        "neverAsks": [
+          "you to move money to a 'safe' or 'holding' account",
+          "your online banking password or one-time passcode",
+          "you to keep a call secret from branch staff"
+        ]
+      },
+      "ms": 1,
+      "t": 1794089823817,
+      "origin": "model"
+    },
+    {
+      "type": "tool_result",
+      "id": "call-2eb8bc97-d554-45b0-9fd2-2c7eaf6f95bb",
+      "name": "match_scam_patterns",
+      "summary": "Bank 'safe account' transfer (100%); Account locked / verify identity (50%)",
+      "signals": [
+        {
+          "signal": "Matches \"Bank 'safe account' transfer\" playbook",
+          "detail": "Caller posing as bank fraud team convinces victim to move money to a 'secure' account they control.",
+          "weight": "high",
+          "direction": "risk",
+          "source": "Scam pattern library"
+        }
+      ],
+      "data": [
+        {
+          "id": "safe_account",
+          "name": "Bank 'safe account' transfer",
+          "description": "Caller posing as bank fraud team convinces victim to move money to a 'secure' account they control.",
+          "tactics": [
+            "authority",
+            "fear",
+            "urgency",
+            "isolation"
+          ],
+          "score": 1
+        },
+        {
+          "id": "account_locked",
+          "name": "Account locked / verify identity",
+          "description": "Claims an account is locked or compromised and asks you to sign in through a link.",
+          "tactics": [
+            "fear",
+            "urgency"
+          ],
+          "score": 0.5
+        }
+      ],
+      "ms": 1,
+      "t": 1794089823817,
+      "origin": "model"
+    },
+    {
+      "type": "llm_call",
+      "model": "nvidia/nemotron-3.5-super-vl-120b-a12b",
+      "purpose": "investigate",
+      "turn": 1,
+      "ms": 6110,
+      "tokens": {
+        "promptTokens": 3142,
+        "completionTokens": 1073,
+        "totalTokens": 4215,
+        "reasoningTokens": 511
+      },
+      "toolCalls": 1,
+      "format": "native",
+      "thinking": "low",
+      "t": 1794089829927
+    },
+    {
+      "type": "thought",
+      "model": "nvidia/nemotron-3.5-super-vl-120b-a12b",
+      "text": "All four tools have returned results. Let me analyze:\n\n1. extract_indicators: No links, claims PNC Bank, urgency (\"immediately\"), asks to move money to holding account, pushes callback number, asks for secrecy. High risk signals.\n\n2. check_sender: VoIP number, 14 days old, 96 spam reports, not registered to PNC Bank, caller ID unverified. High risk.\n\n3. lookup_official_contact: PNC Bank official domain is pnc.com, safe contact is number on back of card or pnc.com. PNC never asks to move money to safe/holding account, never asks for password/OTP, never asks to keep call secret from branch staff.\n\n4. match_scam_patterns: Matches \"Bank 'safe account' transfer\" playbook at 100% score, tactics: a…",
+      "t": 1794089829927,
+      "turn": 1,
+      "ms": 6110,
+      "usage": {
+        "promptTokens": 3142,
+        "completionTokens": 1073,
+        "totalTokens": 4215,
+        "reasoningTokens": 511
+      }
+    },
+    {
+      "type": "guardrail",
+      "changed": false,
+      "ms": 0,
+      "t": 1794089829927
+    },
+    {
+      "type": "verdict",
+      "verdict": {
+        "risk": "scam",
+        "confidence": 0.99,
+        "scamType": "Bank \"safe account\" transfer scam",
+        "headline": "This is a bank impersonation scam — do not call or move money",
+        "explanation": "The message claims to be from PNC Bank fraud prevention and asks you to move money to a \"holding account\" and call back 877-555-0199. That number is a 14-day-old VoIP line with 96 spam reports and is not registered to PNC Bank. PNC Bank never asks customers to move money to a \"safe\" or \"holding\" account, never asks for secrecy from branch staff, and directs customers to the number on their card or pnc.com instead.",
+        "evidence": [
+          {
+            "signal": "Asks to move money to holding account",
+            "detail": "Message instructs victim to transfer balance to a 'secure holding account' set up by the caller",
+            "weight": "high",
+            "direction": "risk",
+            "source": "extract_indicators"
+          },
+          {
+            "signal": "Sender not registered to PNC Bank",
+            "detail": "VoIP number activated 14 days ago, 96 spam reports this week, caller ID unverified",
+            "weight": "high",
+            "direction": "risk",
+            "source": "check_sender"
+          },
+          {
+            "signal": "PNC never requests this",
+            "detail": "PNC Bank official guidance: never asks to move money to a safe/holding account, never asks for secrecy from branch staff",
+            "weight": "high",
+            "direction": "risk",
+            "source": "lookup_official_contact"
+          },
+          {
+            "signal": "Matches known scam playbook",
+            "detail": "100% match on 'Bank safe account transfer' playbook using authority, fear, urgency, and isolation tactics",
+            "weight": "high",
+            "direction": "risk",
+            "source": "match_scam_patterns"
+          },
+          {
+            "signal": "Requests secrecy",
+            "detail": "Tells victim not to discuss with branch staff due to an 'internal investigation'",
+            "weight": "medium",
+            "direction": "risk",
+            "source": "extract_indicators"
+          }
+        ],
+        "actions": [
+          {
+            "id": "block_sender",
+            "label": "Block sender"
+          },
+          {
+            "id": "report_7726",
+            "label": "Report spam (7726)"
+          },
+          {
+            "id": "delete_message",
+            "label": "Delete message"
+          },
+          {
+            "id": "verify_official",
+            "label": "Check with the real company"
+          },
+          {
+            "id": "warn_family",
+            "label": "Warn my family"
+          },
+          {
+            "id": "open_recovery",
+            "label": "I already responded"
+          }
+        ],
+        "verifyContact": {
+          "org": "PNC Bank",
+          "how": "Call the number on the back of your PNC card, or type pnc.com yourself",
+          "url": "https://www.pnc.com"
+        },
+        "uncertainty": "None"
+      },
+      "model": "nvidia/nemotron-3.5-super-vl-120b-a12b",
+      "t": 1794089829927
+    },
+    {
+      "type": "done",
+      "totalMs": 8369,
+      "llmCalls": 3,
+      "toolCalls": 4,
+      "t": 1794089829927,
+      "metrics": {
+        "llmMs": 8363,
+        "toolMs": 2,
+        "tokens": {
+          "promptTokens": 5373,
+          "completionTokens": 1374,
+          "totalTokens": 6747,
+          "reasoningTokens": 631
+        },
+        "byModel": {
+          "nvidia/nemotron-3.5-lightning-30b-a3b": {
+            "calls": 1,
+            "ms": 583,
+            "tokens": {
+              "promptTokens": 300,
+              "completionTokens": 34,
+              "totalTokens": 334
+            }
+          },
+          "nvidia/nemotron-3.5-super-vl-120b-a12b": {
+            "calls": 2,
+            "ms": 7780,
+            "tokens": {
+              "promptTokens": 5073,
+              "completionTokens": 1340,
+              "totalTokens": 6413,
+              "reasoningTokens": 631
+            }
+          }
+        },
+        "budgetMs": 25000
+      }
+    }
+  ]
+}

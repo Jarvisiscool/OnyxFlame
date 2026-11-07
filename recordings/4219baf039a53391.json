@@ -1,0 +1,393 @@
+{
+  "key": "4219baf039a53391",
+  "message": {
+    "id": "otp-1794089814875",
+    "channel": "sms",
+    "from": "73981",
+    "displayName": "Amazon",
+    "redactedBody": "Your Amazon verification code is [CODE]. Don't share this code with anyone. We will never ask for it."
+  },
+  "recordedAt": "2026-11-07T22:17:01.535Z",
+  "events": [
+    {
+      "type": "start",
+      "mode": "live",
+      "models": {
+        "fast": "nvidia/nemotron-3.5-lightning-30b-a3b",
+        "deep": "nvidia/nemotron-3.5-super-vl-120b-a12b"
+      },
+      "t": 1794089814916,
+      "budgetMs": 25000
+    },
+    {
+      "type": "redaction",
+      "redacted": "Your Amazon verification code is [CODE]. Don't share this code with anyone. We will never ask for it.",
+      "items": [
+        {
+          "kind": "one-time code",
+          "count": 1
+        }
+      ],
+      "t": 1794089814917
+    },
+    {
+      "type": "llm_call",
+      "model": "nvidia/nemotron-3.5-lightning-30b-a3b",
+      "purpose": "triage",
+      "ms": 465,
+      "tokens": {
+        "promptTokens": 219,
+        "completionTokens": 27,
+        "totalTokens": 246
+      },
+      "toolCalls": 0,
+      "format": "none",
+      "thinking": "off",
+      "t": 1794089815385
+    },
+    {
+      "type": "triage",
+      "model": "nvidia/nemotron-3.5-lightning-30b-a3b",
+      "risk": "scam",
+      "confidence": 0.95,
+      "reason": "Amazon verification code request - classic phishing attempt",
+      "ms": 467,
+      "t": 1794089815385,
+      "usage": {
+        "promptTokens": 219,
+        "completionTokens": 27,
+        "totalTokens": 246
+      }
+    },
+    {
+      "type": "route",
+      "decision": "escalate",
+      "reason": "Escalating to the deep investigator: claims to be Amazon, triage flagged scam.",
+      "t": 1794089815386
+    },
+    {
+      "type": "llm_call",
+      "model": "nvidia/nemotron-3.5-super-vl-120b-a12b",
+      "purpose": "investigate",
+      "turn": 0,
+      "ms": 2150,
+      "tokens": {
+        "promptTokens": 1847,
+        "completionTokens": 331,
+        "totalTokens": 2178,
+        "reasoningTokens": 196
+      },
+      "toolCalls": 4,
+      "format": "native",
+      "thinking": "low",
+      "t": 1794089817536
+    },
+    {
+      "type": "plan",
+      "model": "nvidia/nemotron-3.5-super-vl-120b-a12b",
+      "text": "Verify whether short code 73981 claiming to be Amazon is a registered sender, check the message for scam patterns, and look up Amazon's official contact practices.",
+      "steps": [
+        "Verify whether short code 73981 claiming to be Amazon is a registered sender, check the message for scam patterns, and look up Amazon's official contact practices"
+      ],
+      "source": "model",
+      "t": 1794089817536,
+      "ms": 2150,
+      "usage": {
+        "promptTokens": 1847,
+        "completionTokens": 331,
+        "totalTokens": 2178,
+        "reasoningTokens": 196
+      }
+    },
+    {
+      "type": "thought",
+      "model": "nvidia/nemotron-3.5-super-vl-120b-a12b",
+      "text": "Let me analyze this message carefully. It's an SMS from short code 73981, claiming to be from \"Amazon\", containing a verification code message that says \"Don't share this code with anyone. We will never ask for it.\"\n\nThis looks like it could be a legitimate Amazon 2FA code message, but I need to verify. The fast triage flagged it as scam, but I should do my own investigation.\n\nLet me start with my Plan line, then run the tools in parallel:\n1. extract_indicators - to parse what's in the message\n2. check_sender - to check the short code 73981 claiming to be Amazon\n3. check_link - no links in the message, so skip\n4. lookup_official_contact - for Amazon\n5. match_scam_patterns - to compare agains…",
+      "t": 1794089817537,
+      "turn": 0
+    },
+    {
+      "type": "tool_call",
+      "id": "call-5cbc127e-b084-4fd7-9e88-7ebbfcec2c42",
+      "name": "extract_indicators",
+      "args": {},
+      "t": 1794089817537,
+      "origin": "model",
+      "turn": 0,
+      "format": "native",
+      "model": "nvidia/nemotron-3.5-super-vl-120b-a12b"
+    },
+    {
+      "type": "tool_call",
+      "id": "call-9b7eb7fc-80a4-4b35-9a71-f8bfdb18b48b",
+      "name": "check_sender",
+      "args": {
+        "sender": "73981",
+        "claimed_name": "Amazon"
+      },
+      "t": 1794089817537,
+      "origin": "model",
+      "turn": 0,
+      "format": "native",
+      "model": "nvidia/nemotron-3.5-super-vl-120b-a12b"
+    },
+    {
+      "type": "tool_call",
+      "id": "call-4ed49053-2ee1-4a73-a5c5-5ad4b5f4ac0a",
+      "name": "lookup_official_contact",
+      "args": {
+        "organization": "Amazon"
+      },
+      "t": 1794089817537,
+      "origin": "model",
+      "turn": 0,
+      "format": "native",
+      "model": "nvidia/nemotron-3.5-super-vl-120b-a12b"
+    },
+    {
+      "type": "tool_call",
+      "id": "call-2e5a559d-eff0-4023-9662-cd3847080b69",
+      "name": "match_scam_patterns",
+      "args": {},
+      "t": 1794089817537,
+      "origin": "model",
+      "turn": 0,
+      "format": "native",
+      "model": "nvidia/nemotron-3.5-super-vl-120b-a12b"
+    },
+    {
+      "type": "tool_result",
+      "id": "call-5cbc127e-b084-4fd7-9e88-7ebbfcec2c42",
+      "name": "extract_indicators",
+      "summary": "no links · claims Amazon · delivers a one-time code",
+      "signals": [
+        {
+          "signal": "Code delivered, not requested",
+          "detail": "It sends you a one-time code and doesn't ask for it back",
+          "weight": "low",
+          "direction": "safe",
+          "source": "Message analysis"
+        }
+      ],
+      "data": {
+        "urls": [],
+        "phones": [],
+        "emails": [],
+        "amounts": [],
+        "claimedOrgs": [
+          "Amazon"
+        ],
+        "urgency": [],
+        "paymentMethods": [],
+        "asksForCode": false,
+        "deliversCode": true,
+        "asksToReply": false,
+        "asksToCall": false,
+        "secrecy": false,
+        "threats": [],
+        "riskyRails": [],
+        "railsAsked": [],
+        "p2pApps": [],
+        "requestsPayment": false,
+        "giftCardPayment": false,
+        "moveMoney": false,
+        "asksForPersonalInfo": false,
+        "callbackAlarm": false,
+        "replyYesNo": false,
+        "qrCode": false,
+        "offPlatformChat": [],
+        "maxAmount": 0,
+        "urgencyCount": 0,
+        "capsRatio": 0.05405405405405406
+      },
+      "ms": 3,
+      "t": 1794089817540,
+      "origin": "model"
+    },
+    {
+      "type": "tool_result",
+      "id": "call-9b7eb7fc-80a4-4b35-9a71-f8bfdb18b48b",
+      "name": "check_sender",
+      "summary": "short code, 3100d old, registered to Amazon",
+      "signals": [
+        {
+          "signal": "Registered sender",
+          "detail": "This short code is registered to Amazon",
+          "weight": "high",
+          "direction": "safe",
+          "source": "Carrier network signals (simulated)"
+        }
+      ],
+      "data": {
+        "sender": "73981",
+        "lineType": "short code",
+        "numberAgeDays": 3100,
+        "messages24h": 2400000,
+        "distinctRecipients24h": 2390000,
+        "spamReports7d": 0,
+        "registeredBusiness": "Amazon"
+      },
+      "ms": 2,
+      "t": 1794089817540,
+      "origin": "model"
+    },
+    {
+      "type": "tool_result",
+      "id": "call-4ed49053-2ee1-4a73-a5c5-5ad4b5f4ac0a",
+      "name": "lookup_official_contact",
+      "summary": "Amazon: Open the Amazon app and check Your Orders",
+      "signals": [],
+      "data": {
+        "org": "Amazon",
+        "officialDomains": [
+          "amazon.com"
+        ],
+        "safeContact": "Open the Amazon app and check Your Orders",
+        "url": "https://www.amazon.com",
+        "neverAsks": [
+          "you to share a verification code with anyone",
+          "payment outside amazon.com"
+        ]
+      },
+      "ms": 2,
+      "t": 1794089817540,
+      "origin": "model"
+    },
+    {
+      "type": "tool_result",
+      "id": "call-2e5a559d-eff0-4023-9662-cd3847080b69",
+      "name": "match_scam_patterns",
+      "summary": "no known playbook matched",
+      "signals": [],
+      "data": [],
+      "ms": 2,
+      "t": 1794089817540,
+      "origin": "model"
+    },
+    {
+      "type": "llm_call",
+      "model": "nvidia/nemotron-3.5-super-vl-120b-a12b",
+      "purpose": "investigate",
+      "turn": 1,
+      "ms": 3993,
+      "tokens": {
+        "promptTokens": 2461,
+        "completionTokens": 753,
+        "totalTokens": 3214,
+        "reasoningTokens": 303
+      },
+      "toolCalls": 1,
+      "format": "native",
+      "thinking": "low",
+      "t": 1794089821533
+    },
+    {
+      "type": "thought",
+      "model": "nvidia/nemotron-3.5-super-vl-120b-a12b",
+      "text": "All checks are done. Let me analyze:\n\n1. extract_indicators: No links, no phones, no amounts, no urgency, no payment methods, no request for code. It delivers a code but doesn't ask for it back. No secrecy, no threats. This is actually a legitimate verification code message.\n\n2. check_sender: Short code 73981 is registered to Amazon, 3100 days old (~8.5 years), no spam reports, high volume but that's normal for Amazon's verification traffic. Registered business: Amazon.\n\n3. lookup_official_contact: Amazon's official domains include amazon.com, safe contact is through the Amazon app, and Amazon never asks you to share a verification code with anyone.\n\n4. match_scam_patterns: No known playbook…",
+      "t": 1794089821534,
+      "turn": 1,
+      "ms": 3993,
+      "usage": {
+        "promptTokens": 2461,
+        "completionTokens": 753,
+        "totalTokens": 3214,
+        "reasoningTokens": 303
+      }
+    },
+    {
+      "type": "guardrail",
+      "changed": false,
+      "ms": 0,
+      "t": 1794089821534
+    },
+    {
+      "type": "verdict",
+      "verdict": {
+        "risk": "safe",
+        "confidence": 0.92,
+        "scamType": "Legitimate message",
+        "headline": "This is a real Amazon verification code text",
+        "explanation": "Short code 73981 is registered to Amazon with no spam reports, and the message contains no links, no request for the code back, no payment demand, and no threats. Amazon confirms it never asks you to share a verification code by text — this message only delivers one.",
+        "evidence": [
+          {
+            "signal": "Sender registered to Amazon",
+            "detail": "Short code 73981 is carrier-registered to Amazon, 8+ years old, zero spam reports",
+            "weight": "high",
+            "direction": "safe",
+            "source": "check_sender"
+          },
+          {
+            "signal": "No scam indicators in message",
+            "detail": "No links, no callback number, no request for the code, no payment request, no urgency or threats",
+            "weight": "high",
+            "direction": "safe",
+            "source": "extract_indicators"
+          },
+          {
+            "signal": "No known scam playbook matched",
+            "detail": "Message did not match any known fraud pattern library",
+            "weight": "medium",
+            "direction": "safe",
+            "source": "match_scam_patterns"
+          },
+          {
+            "signal": "Amazon's own guidance",
+            "detail": "Amazon says it never asks you to share a verification code; this message only delivers one and warns not to share it",
+            "weight": "medium",
+            "direction": "safe",
+            "source": "lookup_official_contact"
+          }
+        ],
+        "actions": [
+          {
+            "id": "mark_safe",
+            "label": "Mark as safe"
+          }
+        ],
+        "uncertainty": "If you did not request this code, someone may be attempting to log into your Amazon account — check your account directly through the Amazon app, not via any link in a text."
+      },
+      "model": "nvidia/nemotron-3.5-super-vl-120b-a12b",
+      "t": 1794089821534
+    },
+    {
+      "type": "done",
+      "totalMs": 6618,
+      "llmCalls": 3,
+      "toolCalls": 4,
+      "t": 1794089821534,
+      "metrics": {
+        "llmMs": 6608,
+        "toolMs": 3,
+        "tokens": {
+          "promptTokens": 4527,
+          "completionTokens": 1111,
+          "totalTokens": 5638,
+          "reasoningTokens": 499
+        },
+        "byModel": {
+          "nvidia/nemotron-3.5-lightning-30b-a3b": {
+            "calls": 1,
+            "ms": 465,
+            "tokens": {
+              "promptTokens": 219,
+              "completionTokens": 27,
+              "totalTokens": 246
+            }
+          },
+          "nvidia/nemotron-3.5-super-vl-120b-a12b": {
+            "calls": 2,
+            "ms": 6143,
+            "tokens": {
+              "promptTokens": 4308,
+              "completionTokens": 1084,
+              "totalTokens": 5392,
+              "reasoningTokens": 499
+            }
+          }
+        },
+        "budgetMs": 25000
+      }
+    }
+  ]
+}

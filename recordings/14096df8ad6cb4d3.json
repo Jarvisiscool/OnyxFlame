@@ -1,0 +1,124 @@
+{
+  "key": "14096df8ad6cb4d3",
+  "message": {
+    "id": "wrong_number-1794089816441",
+    "channel": "sms",
+    "from": "+1 (646) 555-0121",
+    "redactedBody": "Hi Emily, is this still your number? It's Grace from the yoga studio 😊 are we still on for brunch Saturday?"
+  },
+  "recordedAt": "2026-11-07T22:17:27.699Z",
+  "events": [
+    {
+      "type": "start",
+      "mode": "live",
+      "models": {
+        "fast": "nvidia/nemotron-3.5-lightning-30b-a3b",
+        "deep": "nvidia/nemotron-3.5-super-vl-120b-a12b"
+      },
+      "t": 1794089847361,
+      "budgetMs": 25000
+    },
+    {
+      "type": "redaction",
+      "redacted": "Hi Emily, is this still your number? It's Grace from the yoga studio 😊 are we still on for brunch Saturday?",
+      "items": [],
+      "t": 1794089847362
+    },
+    {
+      "type": "llm_call",
+      "model": "nvidia/nemotron-3.5-lightning-30b-a3b",
+      "purpose": "triage",
+      "ms": 317,
+      "tokens": {
+        "promptTokens": 229,
+        "completionTokens": 26,
+        "totalTokens": 255
+      },
+      "toolCalls": 0,
+      "format": "none",
+      "thinking": "off",
+      "t": 1794089847699
+    },
+    {
+      "type": "triage",
+      "model": "nvidia/nemotron-3.5-lightning-30b-a3b",
+      "risk": "safe",
+      "confidence": 0.95,
+      "reason": "Personal yoga studio brunch invitation from known contact",
+      "ms": 317,
+      "t": 1794089847699,
+      "usage": {
+        "promptTokens": 229,
+        "completionTokens": 26,
+        "totalTokens": 255
+      }
+    },
+    {
+      "type": "route",
+      "decision": "fast_path",
+      "reason": "Low risk and nothing to verify. Answered by the small model alone.",
+      "t": 1794089847699
+    },
+    {
+      "type": "guardrail",
+      "changed": false,
+      "ms": 0,
+      "t": 1794089847699
+    },
+    {
+      "type": "verdict",
+      "verdict": {
+        "risk": "safe",
+        "confidence": 0.95,
+        "scamType": "Legitimate message",
+        "headline": "This message looks legitimate.",
+        "explanation": "Personal yoga studio brunch invitation from known contact. No further checks were needed.",
+        "evidence": [
+          {
+            "signal": "Nothing risky to act on",
+            "detail": "No links, no requests for money, codes or personal details",
+            "weight": "medium",
+            "direction": "safe",
+            "source": "Message analysis"
+          }
+        ],
+        "actions": [
+          {
+            "id": "mark_safe",
+            "label": "Mark as safe"
+          }
+        ]
+      },
+      "model": "nvidia/nemotron-3.5-lightning-30b-a3b",
+      "t": 1794089847699
+    },
+    {
+      "type": "done",
+      "totalMs": 338,
+      "llmCalls": 1,
+      "toolCalls": 0,
+      "t": 1794089847699,
+      "metrics": {
+        "llmMs": 317,
+        "toolMs": 0,
+        "tokens": {
+          "promptTokens": 229,
+          "completionTokens": 26,
+          "totalTokens": 255
+        },
+        "byModel": {
+          "nvidia/nemotron-3.5-lightning-30b-a3b": {
+            "calls": 1,
+            "ms": 317,
+            "tokens": {
+              "promptTokens": 229,
+              "completionTokens": 26,
+              "totalTokens": 255
+            }
+          }
+        },
+        "budgetMs": 25000
+      }
+    }
+  ]
+}

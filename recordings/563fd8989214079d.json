@@ -1,0 +1,461 @@
+{
+  "key": "563fd8989214079d",
+  "message": {
+    "id": "sim_swap-1794089816275",
+    "channel": "sms",
+    "from": "+1 (972) 555-0164",
+    "redactedBody": "Hi [NAME], this is Jake from T-Mobile Support. We're upgrading your SIM to our new 5G network today. You'll get a 6-digit code in a minute. Please reply with it so I can finish activation, or your service will be interrupted."
+  },
+  "recordedAt": "2026-11-07T22:17:27.342Z",
+  "events": [
+    {
+      "type": "start",
+      "mode": "live",
+      "models": {
+        "fast": "nvidia/nemotron-3.5-lightning-30b-a3b",
+        "deep": "nvidia/nemotron-3.5-super-vl-120b-a12b"
+      },
+      "t": 1794089840194,
+      "budgetMs": 25000
+    },
+    {
+      "type": "redaction",
+      "redacted": "Hi [NAME], this is Jake from T-Mobile Support. We're upgrading your SIM to our new 5G network today. You'll get a 6-digit code in a minute. Please reply with it so I can finish activation, or your service will be interrupted.",
+      "items": [
+        {
+          "kind": "personal name",
+          "count": 1
+        }
+      ],
+      "t": 1794089840194
+    },
+    {
+      "type": "llm_call",
+      "model": "nvidia/nemotron-3.5-lightning-30b-a3b",
+      "purpose": "triage",
+      "ms": 482,
+      "tokens": {
+        "promptTokens": 257,
+        "completionTokens": 30,
+        "totalTokens": 287
+      },
+      "toolCalls": 0,
+      "format": "none",
+      "thinking": "off",
+      "t": 1794089840676
+    },
+    {
+      "type": "triage",
+      "model": "nvidia/nemotron-3.5-lightning-30b-a3b",
+      "risk": "scam",
+      "confidence": 0.95,
+      "reason": "T-Mobile impersonation asking for 6-digit code",
+      "ms": 482,
+      "t": 1794089840676,
+      "usage": {
+        "promptTokens": 257,
+        "completionTokens": 30,
+        "totalTokens": 287
+      }
+    },
+    {
+      "type": "route",
+      "decision": "escalate",
+      "reason": "Escalating to the deep investigator: claims to be T-Mobile, asks for a code, triage flagged scam.",
+      "t": 1794089840676
+    },
+    {
+      "type": "llm_call",
+      "model": "nvidia/nemotron-3.5-super-vl-120b-a12b",
+      "purpose": "investigate",
+      "turn": 0,
+      "ms": 2459,
+      "tokens": {
+        "promptTokens": 1880,
+        "completionTokens": 386,
+        "totalTokens": 2266,
+        "reasoningTokens": 234
+      },
+      "toolCalls": 4,
+      "format": "native",
+      "thinking": "low",
+      "t": 1794089843135
+    },
+    {
+      "type": "plan",
+      "model": "nvidia/nemotron-3.5-super-vl-120b-a12b",
+      "text": "Extract message indicators, check the sender number's carrier reputation, look up T-Mobile's official contact guidance, and compare the message against known scam playbooks — all in parallel.",
+      "steps": [
+        "Extract message indicators, check the sender number's carrier reputation, look up T-Mobile's official contact guidance, and compare the message against known scam playbooks — all in parallel"
+      ],
+      "source": "model",
+      "t": 1794089843136,
+      "ms": 2459,
+      "usage": {
+        "promptTokens": 1880,
+        "completionTokens": 386,
+        "totalTokens": 2266,
+        "reasoningTokens": 234
+      }
+    },
+    {
+      "type": "thought",
+      "model": "nvidia/nemotron-3.5-super-vl-120b-a12b",
+      "text": "Let me analyze this message. It's a classic SIM swap / port-out scam impersonating T-Mobile Support, asking for a 6-digit verification code. Let me follow the protocol:\n\n1. First, write a one-line Plan starting with \"Plan:\"\n2. Then call tools: extract_indicators, check_sender, check_link (if any links), lookup_official_contact (for T-Mobile), match_scam_patterns\n\nLet me start with the Plan line and then call the independent tools together.\n\nThe message:\n- Sender: +1 (972) 555-0164\n- Claims to be \"Jake from T-Mobile Support\"\n- Says they're upgrading SIM to 5G network\n- Asks for 6-digit code via reply\n- Threatens service interruption\n\nThis is clearly a scam pattern - SIM swap scam asking for v…",
+      "t": 1794089843136,
+      "turn": 0
+    },
+    {
+      "type": "tool_call",
+      "id": "call-7e9e9b26-aa98-4903-8aeb-b61e85391d9a",
+      "name": "extract_indicators",
+      "args": {},
+      "t": 1794089843136,
+      "origin": "model",
+      "turn": 0,
+      "format": "native",
+      "model": "nvidia/nemotron-3.5-super-vl-120b-a12b"
+    },
+    {
+      "type": "tool_call",
+      "id": "call-35000da2-19e6-4716-a8db-437925b71215",
+      "name": "check_sender",
+      "args": {
+        "sender": "+1 (972) 555-0164",
+        "claimed_name": "T-Mobile Support"
+      },
+      "t": 1794089843136,
+      "origin": "model",
+      "turn": 0,
+      "format": "native",
+      "model": "nvidia/nemotron-3.5-super-vl-120b-a12b"
+    },
+    {
+      "type": "tool_call",
+      "id": "call-340cd327-da8e-4e21-bd93-2e473248b334",
+      "name": "lookup_official_contact",
+      "args": {
+        "organization": "T-Mobile"
+      },
+      "t": 1794089843136,
+      "origin": "model",
+      "turn": 0,
+      "format": "native",
+      "model": "nvidia/nemotron-3.5-super-vl-120b-a12b"
+    },
+    {
+      "type": "tool_call",
+      "id": "call-b23d331e-e9e7-40b6-80e5-d64f3a403c90",
+      "name": "match_scam_patterns",
+      "args": {},
+      "t": 1794089843136,
+      "origin": "model",
+      "turn": 0,
+      "format": "native",
+      "model": "nvidia/nemotron-3.5-super-vl-120b-a12b"
+    },
+    {
+      "type": "tool_result",
+      "id": "call-7e9e9b26-aa98-4903-8aeb-b61e85391d9a",
+      "name": "extract_indicators",
+      "summary": "no links · claims T-Mobile · urgency: today · asks for a code",
+      "signals": [
+        {
+          "signal": "Asks for your code",
+          "detail": "Requests a verification code or PIN, which no legitimate company does",
+          "weight": "high",
+          "direction": "risk",
+          "source": "Message analysis"
+        }
+      ],
+      "data": {
+        "urls": [],
+        "phones": [],
+        "emails": [],
+        "amounts": [],
+        "claimedOrgs": [
+          "T-Mobile"
+        ],
+        "urgency": [
+          "today"
+        ],
+        "paymentMethods": [],
+        "asksForCode": true,
+        "deliversCode": false,
+        "asksToReply": true,
+        "asksToCall": false,
+        "secrecy": false,
+        "threats": [],
+        "riskyRails": [],
+        "railsAsked": [],
+        "p2pApps": [],
+        "requestsPayment": false,
+        "giftCardPayment": false,
+        "moveMoney": false,
+        "asksForPersonalInfo": false,
+        "callbackAlarm": false,
+        "replyYesNo": false,
+        "qrCode": false,
+        "offPlatformChat": [],
+        "maxAmount": 0,
+        "urgencyCount": 1,
+        "capsRatio": 0.07784431137724551
+      },
+      "ms": 2,
+      "t": 1794089843138,
+      "origin": "model"
+    },
+    {
+      "type": "tool_result",
+      "id": "call-35000da2-19e6-4716-a8db-437925b71215",
+      "name": "check_sender",
+      "summary": "voip, 9d old, 27 reports",
+      "signals": [
+        {
+          "signal": "Not a registered sender",
+          "detail": "Claims to be T-Mobile, but comes from an ordinary phone number that isn't on T-Mobile's registered sender list",
+          "weight": "medium",
+          "direction": "risk",
+          "source": "Carrier network signals (simulated)"
+        },
+        {
+          "signal": "New number",
+          "detail": "This number was activated 9 days ago",
+          "weight": "medium",
+          "direction": "risk",
+          "source": "Carrier network signals (simulated)"
+        },
+        {
+          "signal": "Internet phone number",
+          "detail": "VoIP numbers are cheap to create and discard",
+          "weight": "low",
+          "direction": "risk",
+          "source": "Carrier network signals (simulated)"
+        },
+        {
+          "signal": "Reported by others",
+          "detail": "27 people reported this sender this week",
+          "weight": "high",
+          "direction": "risk",
+          "source": "Carrier network signals (simulated)"
+        }
+      ],
+      "data": {
+        "sender": "+1 (972) 555-0164",
+        "lineType": "voip",
+        "numberAgeDays": 9,
+        "messages24h": 63,
+        "distinctRecipients24h": 61,
+        "spamReports7d": 27
+      },
+      "ms": 1,
+      "t": 1794089843138,
+      "origin": "model"
+    },
+    {
+      "type": "tool_result",
+      "id": "call-340cd327-da8e-4e21-bd93-2e473248b334",
+      "name": "lookup_official_contact",
+      "summary": "T-Mobile: Dial 611 from your T-Mobile phone, or open the T-Life app",
+      "signals": [],
+      "data": {
+        "org": "T-Mobile",
+        "officialDomains": [
+          "t-mobile.com",
+          "tmobile.com"
+        ],
+        "safeContact": "Dial 611 from your T-Mobile phone, or open the T-Life app",
+        "url": "https://www.t-mobile.com",
+        "neverAsks": [
+          "your account PIN or a verification code by text",
+          "you to redeem rewards through a link from an unknown number",
+          "payment by gift card"
+        ]
+      },
+      "ms": 1,
+      "t": 1794089843138,
+      "origin": "model"
+    },
+    {
+      "type": "tool_result",
+      "id": "call-b23d331e-e9e7-40b6-80e5-d64f3a403c90",
+      "name": "match_scam_patterns",
+      "summary": "Verification code theft / SIM swap (100%)",
+      "signals": [
+        {
+          "signal": "Matches \"Verification code theft / SIM swap\" playbook",
+          "detail": "Scammer triggers a real one-time code, then poses as support and asks the victim to read it back to take over the account or port the number.",
+          "weight": "high",
+          "direction": "risk",
+          "source": "Scam pattern library"
+        }
+      ],
+      "data": [
+        {
+          "id": "otp_theft",
+          "name": "Verification code theft / SIM swap",
+          "description": "Scammer triggers a real one-time code, then poses as support and asks the victim to read it back to take over the account or port the number.",
+          "tactics": [
+            "authority",
+            "urgency",
+            "technical confusion"
+          ],
+          "score": 1
+        }
+      ],
+      "ms": 1,
+      "t": 1794089843138,
+      "origin": "model"
+    },
+    {
+      "type": "llm_call",
+      "model": "nvidia/nemotron-3.5-super-vl-120b-a12b",
+      "purpose": "investigate",
+      "turn": 1,
+      "ms": 4202,
+      "tokens": {
+        "promptTokens": 2825,
+        "completionTokens": 701,
+        "totalTokens": 3526,
+        "reasoningTokens": 213
+      },
+      "toolCalls": 1,
+      "format": "native",
+      "thinking": "low",
+      "t": 1794089847340
+    },
+    {
+      "type": "thought",
+      "model": "nvidia/nemotron-3.5-super-vl-120b-a12b",
+      "text": "All four checks are complete and the evidence is overwhelming:\n\n1. **extract_indicators**: No links, claims T-Mobile, urgency (\"today\"), asks for a 6-digit code, asks to reply. High risk signal.\n2. **check_sender**: VoIP number, only 9 days old, 27 spam reports this week, not a registered T-Mobile sender, high mass-texting volume (63 messages in 24h to 61 distinct recipients).\n3. **lookup_official_contact**: T-Mobile's official contact is dialing 611 or using the T-Life app. T-Mobile never asks for your account PIN or verification code by text.\n4. **match_scam_patterns**: Matches \"Verification code theft / SIM swap\" playbook at 100% score.\n\nThis is clearly a scam. I should call submit_verdic…",
+      "t": 1794089847341,
+      "turn": 1,
+      "ms": 4202,
+      "usage": {
+        "promptTokens": 2825,
+        "completionTokens": 701,
+        "totalTokens": 3526,
+        "reasoningTokens": 213
+      }
+    },
+    {
+      "type": "guardrail",
+      "changed": false,
+      "ms": 0,
+      "t": 1794089847341
+    },
+    {
+      "type": "verdict",
+      "verdict": {
+        "risk": "scam",
+        "confidence": 0.98,
+        "scamType": "Verification code theft / SIM swap",
+        "headline": "This is a scam — T-Mobile will never ask for your code by text.",
+        "explanation": "The message pretends to be from T-Mobile Support and asks you to reply with a 6-digit verification code, which is a classic SIM-swap / account takeover playbook. The sender is a VoIP number only 9 days old with 27 spam reports this week, not a registered T-Mobile number. T-Mobile's official guidance says they never ask for your PIN or verification code by text — contact them via 611 or the T-Life app instead.",
+        "evidence": [
+          {
+            "signal": "Asks for verification code",
+            "detail": "Message requests a 6-digit code and asks you to reply with it",
+            "weight": "high",
+            "direction": "risk",
+            "source": "extract_indicators"
+          },
+          {
+            "signal": "Sender reputation",
+            "detail": "VoIP number activated 9 days ago, 27 spam reports this week, not a registered T-Mobile sender",
+            "weight": "high",
+            "direction": "risk",
+            "source": "check_sender"
+          },
+          {
+            "signal": "Official T-Mobile guidance",
+            "detail": "T-Mobile never asks for your account PIN or verification code by text; official contact is 611 or the T-Life app",
+            "weight": "high",
+            "direction": "risk",
+            "source": "lookup_official_contact"
+          },
+          {
+            "signal": "Scam playbook match",
+            "detail": "Matches 'Verification code theft / SIM swap' playbook at 100% score",
+            "weight": "high",
+            "direction": "risk",
+            "source": "match_scam_patterns"
+          }
+        ],
+        "actions": [
+          {
+            "id": "block_sender",
+            "label": "Block sender"
+          },
+          {
+            "id": "report_7726",
+            "label": "Report spam (7726)"
+          },
+          {
+            "id": "delete_message",
+            "label": "Delete message"
+          },
+          {
+            "id": "verify_official",
+            "label": "Check with the real company"
+          },
+          {
+            "id": "warn_family",
+            "label": "Warn my family"
+          },
+          {
+            "id": "open_recovery",
+            "label": "I already responded"
+          }
+        ],
+        "verifyContact": {
+          "org": "T-Mobile",
+          "how": "Dial 611 from your T-Mobile phone, or open the T-Life app",
+          "url": "https://www.t-mobile.com"
+        },
+        "uncertainty": "None"
+      },
+      "model": "nvidia/nemotron-3.5-super-vl-120b-a12b",
+      "t": 1794089847341
+    },
+    {
+      "type": "done",
+      "totalMs": 7147,
+      "llmCalls": 3,
+      "toolCalls": 4,
+      "t": 1794089847341,
+      "metrics": {
+        "llmMs": 7143,
+        "toolMs": 2,
+        "tokens": {
+          "promptTokens": 4962,
+          "completionTokens": 1117,
+          "totalTokens": 6079,
+          "reasoningTokens": 447
+        },
+        "byModel": {
+          "nvidia/nemotron-3.5-lightning-30b-a3b": {
+            "calls": 1,
+            "ms": 482,
+            "tokens": {
+              "promptTokens": 257,
+              "completionTokens": 30,
+              "totalTokens": 287
+            }
+          },
+          "nvidia/nemotron-3.5-super-vl-120b-a12b": {
+            "calls": 2,
+            "ms": 6661,
+            "tokens": {
+              "promptTokens": 4705,
+              "completionTokens": 1087,
+              "totalTokens": 5792,
+              "reasoningTokens": 447
+            }
+          }
+        },
+        "budgetMs": 25000
+      }
+    }
+  ]
+}

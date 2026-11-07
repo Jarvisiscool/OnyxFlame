@@ -1,0 +1,415 @@
+{
+  "key": "3d8c86e231e36dea",
+  "message": {
+    "id": "family-1794089816574",
+    "channel": "sms",
+    "from": "+1 (214) 555-0186",
+    "redactedBody": "Hi Mom it's me, I dropped my phone in the toilet 😩 this is my new number. Can you help me pay a bill today? It's urgent, I'll pay you back tomorrow. Can you send $480 by Zelle?"
+  },
+  "recordedAt": "2026-11-07T22:17:35.970Z",
+  "events": [
+    {
+      "type": "start",
+      "mode": "live",
+      "models": {
+        "fast": "nvidia/nemotron-3.5-lightning-30b-a3b",
+        "deep": "nvidia/nemotron-3.5-super-vl-120b-a12b"
+      },
+      "t": 1794089847713,
+      "budgetMs": 25000
+    },
+    {
+      "type": "redaction",
+      "redacted": "Hi Mom it's me, I dropped my phone in the toilet 😩 this is my new number. Can you help me pay a bill today? It's urgent, I'll pay you back tomorrow. Can you send $480 by Zelle?",
+      "items": [],
+      "t": 1794089847713
+    },
+    {
+      "type": "llm_call",
+      "model": "nvidia/nemotron-3.5-lightning-30b-a3b",
+      "purpose": "triage",
+      "ms": 314,
+      "tokens": {
+        "promptTokens": 254,
+        "completionTokens": 28,
+        "totalTokens": 282
+      },
+      "toolCalls": 0,
+      "format": "none",
+      "thinking": "off",
+      "t": 1794089848028
+    },
+    {
+      "type": "triage",
+      "model": "nvidia/nemotron-3.5-lightning-30b-a3b",
+      "risk": "scam",
+      "confidence": 0.95,
+      "reason": "Impersonation + urgent money request via Zelle",
+      "ms": 314,
+      "t": 1794089848028,
+      "usage": {
+        "promptTokens": 254,
+        "completionTokens": 28,
+        "totalTokens": 282
+      }
+    },
+    {
+      "type": "route",
+      "decision": "escalate",
+      "reason": "Escalating to the deep investigator: mentions money, triage flagged scam.",
+      "t": 1794089848028
+    },
+    {
+      "type": "llm_call",
+      "model": "nvidia/nemotron-3.5-super-vl-120b-a12b",
+      "purpose": "investigate",
+      "turn": 0,
+      "ms": 2724,
+      "tokens": {
+        "promptTokens": 1873,
+        "completionTokens": 213,
+        "totalTokens": 2086,
+        "reasoningTokens": 102
+      },
+      "toolCalls": 3,
+      "format": "native",
+      "thinking": "low",
+      "t": 1794089850752
+    },
+    {
+      "type": "plan",
+      "model": "nvidia/nemotron-3.5-super-vl-120b-a12b",
+      "text": "Extract indicators from the message, check the sender's carrier intelligence, compare against known scam patterns, and verify if any organization is claimed.",
+      "steps": [
+        "Extract indicators from the message, check the sender's carrier intelligence, compare against known scam patterns, and verify if any organization is claimed"
+      ],
+      "source": "model",
+      "t": 1794089850752,
+      "ms": 2724,
+      "usage": {
+        "promptTokens": 1873,
+        "completionTokens": 213,
+        "totalTokens": 2086,
+        "reasoningTokens": 102
+      }
+    },
+    {
+      "type": "thought",
+      "model": "nvidia/nemotron-3.5-super-vl-120b-a12b",
+      "text": "Let me analyze this message. It's a classic \"mom/dad scam\" - someone claiming to be a family member with a new number, asking for urgent money via Zelle. Let me follow the protocol:\n\n1. First, write a one-line Plan\n2. Call extract_indicators first\n3. Then check_sender, check_link (if any links), lookup_official_contact, match_scam_patterns\n\nLet me start with the Plan line and extract_indicators.",
+      "t": 1794089850752,
+      "turn": 0
+    },
+    {
+      "type": "tool_call",
+      "id": "call-c97b241d-a4bb-42bf-b05d-eefe01095c7f",
+      "name": "extract_indicators",
+      "args": {},
+      "t": 1794089850753,
+      "origin": "model",
+      "turn": 0,
+      "format": "native",
+      "model": "nvidia/nemotron-3.5-super-vl-120b-a12b"
+    },
+    {
+      "type": "tool_call",
+      "id": "call-1cb74aa9-a00e-4ff6-b89c-e00f117f6406",
+      "name": "check_sender",
+      "args": {
+        "sender": "+1 (214) 555-0186",
+        "claimed_name": ""
+      },
+      "t": 1794089850753,
+      "origin": "model",
+      "turn": 0,
+      "format": "native",
+      "model": "nvidia/nemotron-3.5-super-vl-120b-a12b"
+    },
+    {
+      "type": "tool_call",
+      "id": "call-4555e0c2-2880-4397-9074-056fe1cabc17",
+      "name": "match_scam_patterns",
+      "args": {},
+      "t": 1794089850753,
+      "origin": "model",
+      "turn": 0,
+      "format": "native",
+      "model": "nvidia/nemotron-3.5-super-vl-120b-a12b"
+    },
+    {
+      "type": "tool_result",
+      "id": "call-c97b241d-a4bb-42bf-b05d-eefe01095c7f",
+      "name": "extract_indicators",
+      "summary": "no links · money $480 · urgency: urgent, today · payment: zelle",
+      "signals": [
+        {
+          "signal": "Hard-to-reverse payment",
+          "detail": "Wants money sent by Zelle. Those payments work like cash, so you can't get them back.",
+          "weight": "medium",
+          "direction": "risk",
+          "source": "Message analysis"
+        },
+        {
+          "signal": "Pressure to act fast",
+          "detail": "Urgent wording: \"urgent\", \"today\"",
+          "weight": "medium",
+          "direction": "risk",
+          "source": "Message analysis"
+        }
+      ],
+      "data": {
+        "urls": [],
+        "phones": [],
+        "emails": [],
+        "amounts": [
+          "$480"
+        ],
+        "claimedOrgs": [],
+        "urgency": [
+          "urgent",
+          "today"
+        ],
+        "paymentMethods": [
+          "zelle"
+        ],
+        "asksForCode": false,
+        "deliversCode": false,
+        "asksToReply": false,
+        "asksToCall": false,
+        "secrecy": false,
+        "threats": [],
+        "riskyRails": [],
+        "railsAsked": [],
+        "p2pApps": [
+          "zelle"
+        ],
+        "requestsPayment": true,
+        "giftCardPayment": false,
+        "moveMoney": false,
+        "asksForPersonalInfo": false,
+        "callbackAlarm": false,
+        "replyYesNo": false,
+        "qrCode": false,
+        "offPlatformChat": [],
+        "maxAmount": 480,
+        "urgencyCount": 2,
+        "capsRatio": 0.064
+      },
+      "ms": 5,
+      "t": 1794089850758,
+      "origin": "model"
+    },
+    {
+      "type": "tool_result",
+      "id": "call-1cb74aa9-a00e-4ff6-b89c-e00f117f6406",
+      "name": "check_sender",
+      "summary": "voip, 2d old, 8 reports",
+      "signals": [
+        {
+          "signal": "New number",
+          "detail": "This number was activated 2 days ago",
+          "weight": "medium",
+          "direction": "risk",
+          "source": "Carrier network signals (simulated)"
+        },
+        {
+          "signal": "Internet phone number",
+          "detail": "VoIP numbers are cheap to create and discard",
+          "weight": "low",
+          "direction": "risk",
+          "source": "Carrier network signals (simulated)"
+        },
+        {
+          "signal": "Reported by others",
+          "detail": "8 people reported this sender this week",
+          "weight": "high",
+          "direction": "risk",
+          "source": "Carrier network signals (simulated)"
+        }
+      ],
+      "data": {
+        "sender": "+1 (214) 555-0186",
+        "lineType": "voip",
+        "numberAgeDays": 2,
+        "messages24h": 35,
+        "distinctRecipients24h": 35,
+        "spamReports7d": 8
+      },
+      "ms": 4,
+      "t": 1794089850758,
+      "origin": "model"
+    },
+    {
+      "type": "tool_result",
+      "id": "call-4555e0c2-2880-4397-9074-056fe1cabc17",
+      "name": "match_scam_patterns",
+      "summary": "'Hi Mom, new number' (100%)",
+      "signals": [
+        {
+          "signal": "Matches \"'Hi Mom, new number'\" playbook",
+          "detail": "Impersonates a child or relative on a new number or in a crisis and asks for urgent money.",
+          "weight": "high",
+          "direction": "risk",
+          "source": "Scam pattern library"
+        }
+      ],
+      "data": [
+        {
+          "id": "family_emergency",
+          "name": "'Hi Mom, new number'",
+          "description": "Impersonates a child or relative on a new number or in a crisis and asks for urgent money.",
+          "tactics": [
+            "emotion",
+            "urgency",
+            "trust"
+          ],
+          "score": 1
+        }
+      ],
+      "ms": 4,
+      "t": 1794089850758,
+      "origin": "model"
+    },
+    {
+      "type": "llm_call",
+      "model": "nvidia/nemotron-3.5-super-vl-120b-a12b",
+      "purpose": "investigate",
+      "turn": 1,
+      "ms": 5210,
+      "tokens": {
+        "promptTokens": 2623,
+        "completionTokens": 730,
+        "totalTokens": 3353,
+        "reasoningTokens": 270
+      },
+      "toolCalls": 1,
+      "format": "native",
+      "thinking": "low",
+      "t": 1794089855968
+    },
+    {
+      "type": "thought",
+      "model": "nvidia/nemotron-3.5-super-vl-120b-a12b",
+      "text": "The investigation is complete. Let me summarize the findings:\n\n1. **extract_indicators**: No links, $480 requested via Zelle, urgent language (\"urgent\", \"today\"), hard-to-reverse payment method, pressure to act fast.\n\n2. **check_sender**: The number +1 (214) 555-0186 is a VoIP number, only 2 days old, has 8 spam reports this week, sent 35 messages to 35 distinct recipients in 24 hours (mass texting behavior).\n\n3. **match_scam_patterns**: 100% match with the \"'Hi Mom, new number'\" playbook - impersonates a child/relative on a new number in a crisis and asks for urgent money.\n\nThis is clearly a scam. The evidence is strong:\n- Matches a known scam playbook exactly (high weight, risk)\n- New VoIP…",
+      "t": 1794089855968,
+      "turn": 1,
+      "ms": 5210,
+      "usage": {
+        "promptTokens": 2623,
+        "completionTokens": 730,
+        "totalTokens": 3353,
+        "reasoningTokens": 270
+      }
+    },
+    {
+      "type": "guardrail",
+      "changed": false,
+      "ms": 0,
+      "t": 1794089855969
+    },
+    {
+      "type": "verdict",
+      "verdict": {
+        "risk": "scam",
+        "confidence": 0.95,
+        "scamType": "Family emergency / 'Hi Mom, new number' impersonation scam",
+        "headline": "This is a scam — someone is pretending to be your child asking for money.",
+        "explanation": "The message matches a known scam playbook exactly: a \"new number\" from someone claiming to be a family member in crisis, asking for urgent money via Zelle. The sender's number is a VoIP line activated just 2 days ago and has already been reported by 8 people this week. Zelle payments are hard to reverse, like cash.",
+        "evidence": [
+          {
+            "signal": "Matches known scam playbook",
+            "detail": "100% match with 'Hi Mom, new number' family emergency scam — impersonates a relative on a new number and asks for urgent money.",
+            "weight": "high",
+            "direction": "risk",
+            "source": "match_scam_patterns"
+          },
+          {
+            "signal": "New VoIP number with spam reports",
+            "detail": "Sender +1 (214) 555-0186 is a VoIP number activated 2 days ago, with 8 spam reports this week and mass-texting behavior (35 recipients in 24 hours).",
+            "weight": "high",
+            "direction": "risk",
+            "source": "check_sender"
+          },
+          {
+            "signal": "Urgent money request via Zelle",
+            "detail": "Asks for $480 by Zelle with urgent language ('urgent', 'today'). Zelle payments are hard to reverse.",
+            "weight": "medium",
+            "direction": "risk",
+            "source": "extract_indicators"
+          }
+        ],
+        "actions": [
+          {
+            "id": "block_sender",
+            "label": "Block sender"
+          },
+          {
+            "id": "report_7726",
+            "label": "Report spam (7726)"
+          },
+          {
+            "id": "delete_message",
+            "label": "Delete message"
+          },
+          {
+            "id": "verify_official",
+            "label": "Check with the real company"
+          },
+          {
+            "id": "warn_family",
+            "label": "Warn my family"
+          },
+          {
+            "id": "open_recovery",
+            "label": "I already responded"
+          }
+        ],
+        "verifyContact": {
+          "org": "your family member",
+          "how": "Call them on the number you already have saved, or ask something only they would know"
+        }
+      },
+      "model": "nvidia/nemotron-3.5-super-vl-120b-a12b",
+      "t": 1794089855969
+    },
+    {
+      "type": "done",
+      "totalMs": 8257,
+      "llmCalls": 3,
+      "toolCalls": 3,
+      "t": 1794089855970,
+      "metrics": {
+        "llmMs": 8248,
+        "toolMs": 5,
+        "tokens": {
+          "promptTokens": 4750,
+          "completionTokens": 971,
+          "totalTokens": 5721,
+          "reasoningTokens": 372
+        },
+        "byModel": {
+          "nvidia/nemotron-3.5-lightning-30b-a3b": {
+            "calls": 1,
+            "ms": 314,
+            "tokens": {
+              "promptTokens": 254,
+              "completionTokens": 28,
+              "totalTokens": 282
+            }
+          },
+          "nvidia/nemotron-3.5-super-vl-120b-a12b": {
+            "calls": 2,
+            "ms": 7934,
+            "tokens": {
+              "promptTokens": 4496,
+              "completionTokens": 943,
+              "totalTokens": 5439,
+              "reasoningTokens": 372
+            }
+          }
+        },
+        "budgetMs": 25000
+      }
+    }
+  ]
+}

@@ -1,0 +1,356 @@
+{
+  "key": "625de8b0799cb8c6",
+  "message": {
+    "id": "clinic-1794089816874",
+    "channel": "sms",
+    "from": "+1 (972) 555-0100",
+    "displayName": "Richardson Family Clinic",
+    "redactedBody": "Reminder: [NAME] has an appointment with Dr. Patel on Tue 11/10 at 2:30 PM. Reply C to confirm or R to reschedule."
+  },
+  "recordedAt": "2026-11-07T22:17:55.487Z",
+  "events": [
+    {
+      "type": "start",
+      "mode": "live",
+      "models": {
+        "fast": "nvidia/nemotron-3.5-lightning-30b-a3b",
+        "deep": "nvidia/nemotron-3.5-super-vl-120b-a12b"
+      },
+      "t": 1794089864054,
+      "budgetMs": 25000
+    },
+    {
+      "type": "redaction",
+      "redacted": "Reminder: [NAME] has an appointment with Dr. Patel on Tue 11/10 at 2:30 PM. Reply C to confirm or R to reschedule.",
+      "items": [
+        {
+          "kind": "personal name",
+          "count": 1
+        }
+      ],
+      "t": 1794089864055
+    },
+    {
+      "type": "llm_call",
+      "model": "nvidia/nemotron-3.5-lightning-30b-a3b",
+      "purpose": "triage",
+      "ms": 482,
+      "tokens": {
+        "promptTokens": 253,
+        "completionTokens": 26,
+        "totalTokens": 279
+      },
+      "toolCalls": 0,
+      "format": "none",
+      "thinking": "off",
+      "t": 1794089864537
+    },
+    {
+      "type": "triage",
+      "model": "nvidia/nemotron-3.5-lightning-30b-a3b",
+      "risk": "safe",
+      "confidence": 0.95,
+      "reason": "Legitimate clinic appointment reminder with standard confirmation options",
+      "ms": 482,
+      "t": 1794089864537,
+      "usage": {
+        "promptTokens": 253,
+        "completionTokens": 26,
+        "totalTokens": 279
+      }
+    },
+    {
+      "type": "route",
+      "decision": "escalate",
+      "reason": "Escalating to the deep investigator: shows as \"Richardson Family Clinic\".",
+      "t": 1794089864537
+    },
+    {
+      "type": "llm_call",
+      "model": "nvidia/nemotron-3.5-super-vl-120b-a12b",
+      "purpose": "investigate",
+      "turn": 0,
+      "ms": 6655,
+      "tokens": {
+        "promptTokens": 1874,
+        "completionTokens": 406,
+        "totalTokens": 2280,
+        "reasoningTokens": 293
+      },
+      "toolCalls": 3,
+      "format": "native",
+      "thinking": "low",
+      "t": 1794089871193
+    },
+    {
+      "type": "plan",
+      "model": "nvidia/nemotron-3.5-super-vl-120b-a12b",
+      "text": "Verify sender identity, extract any links or requests, and compare against scam patterns to confirm this is a legitimate clinic reminder.",
+      "steps": [
+        "Verify sender identity, extract any links or requests, and compare against scam patterns to confirm this is a legitimate clinic reminder"
+      ],
+      "source": "model",
+      "t": 1794089871193,
+      "ms": 6655,
+      "usage": {
+        "promptTokens": 1874,
+        "completionTokens": 406,
+        "totalTokens": 2280,
+        "reasoningTokens": 293
+      }
+    },
+    {
+      "type": "thought",
+      "model": "nvidia/nemotron-3.5-super-vl-120b-a12b",
+      "text": "The user wants me to investigate an SMS message. Let me follow the protocol:\n\n1. First, write a one-line Plan starting with \"Plan:\" (max 30 words)\n2. Then call tools - I should call extract_indicators first, and since there are no links, I can also call check_sender and match_scam_patterns in parallel\n3. Then based on results, call submit_verdict\n\nThe message is an appointment reminder from \"Richardson Family Clinic\" asking to reply C to confirm or R to reschedule. No links, no money requests, no codes requested. Fast triage said safe.\n\nLet me start with the Plan line and then call extract_indicators, check_sender, and match_scam_patterns in parallel since they're independent.\n\nWait, let me …",
+      "t": 1794089871193,
+      "turn": 0
+    },
+    {
+      "type": "tool_call",
+      "id": "call-f719ca9d-dfb2-4633-a6b7-78a8f5f6b715",
+      "name": "extract_indicators",
+      "args": {},
+      "t": 1794089871193,
+      "origin": "model",
+      "turn": 0,
+      "format": "native",
+      "model": "nvidia/nemotron-3.5-super-vl-120b-a12b"
+    },
+    {
+      "type": "tool_call",
+      "id": "call-334c549d-eaae-4428-9629-82946fc629c5",
+      "name": "check_sender",
+      "args": {
+        "sender": "+1 (972) 555-0100",
+        "claimed_name": "Richardson Family Clinic"
+      },
+      "t": 1794089871193,
+      "origin": "model",
+      "turn": 0,
+      "format": "native",
+      "model": "nvidia/nemotron-3.5-super-vl-120b-a12b"
+    },
+    {
+      "type": "tool_call",
+      "id": "call-ade4647a-d73b-4490-b800-cfe68f291690",
+      "name": "match_scam_patterns",
+      "args": {},
+      "t": 1794089871193,
+      "origin": "model",
+      "turn": 0,
+      "format": "native",
+      "model": "nvidia/nemotron-3.5-super-vl-120b-a12b"
+    },
+    {
+      "type": "tool_result",
+      "id": "call-f719ca9d-dfb2-4633-a6b7-78a8f5f6b715",
+      "name": "extract_indicators",
+      "summary": "no links",
+      "signals": [],
+      "data": {
+        "urls": [],
+        "phones": [],
+        "emails": [],
+        "amounts": [],
+        "claimedOrgs": [],
+        "urgency": [],
+        "paymentMethods": [],
+        "asksForCode": false,
+        "deliversCode": false,
+        "asksToReply": true,
+        "asksToCall": false,
+        "secrecy": false,
+        "threats": [],
+        "riskyRails": [],
+        "railsAsked": [],
+        "p2pApps": [],
+        "requestsPayment": false,
+        "giftCardPayment": false,
+        "moveMoney": false,
+        "asksForPersonalInfo": false,
+        "callbackAlarm": false,
+        "replyYesNo": false,
+        "qrCode": false,
+        "offPlatformChat": [],
+        "maxAmount": 0,
+        "urgencyCount": 0,
+        "capsRatio": 0.12162162162162163
+      },
+      "ms": 0,
+      "t": 1794089871194,
+      "origin": "model"
+    },
+    {
+      "type": "tool_result",
+      "id": "call-334c549d-eaae-4428-9629-82946fc629c5",
+      "name": "check_sender",
+      "summary": "landline, 4200d old, registered to Richardson Family Clinic",
+      "signals": [
+        {
+          "signal": "Registered sender",
+          "detail": "This landline is registered to Richardson Family Clinic",
+          "weight": "high",
+          "direction": "safe",
+          "source": "Carrier network signals (simulated)"
+        },
+        {
+          "signal": "Caller ID verified",
+          "detail": "The network fully verified this caller ID (STIR/SHAKEN level A)",
+          "weight": "medium",
+          "direction": "safe",
+          "source": "Carrier network signals (simulated)"
+        }
+      ],
+      "data": {
+        "sender": "+1 (972) 555-0100",
+        "lineType": "landline",
+        "numberAgeDays": 4200,
+        "attestation": "A",
+        "messages24h": 210,
+        "distinctRecipients24h": 205,
+        "spamReports7d": 0,
+        "registeredBusiness": "Richardson Family Clinic"
+      },
+      "ms": 0,
+      "t": 1794089871194,
+      "origin": "model"
+    },
+    {
+      "type": "tool_result",
+      "id": "call-ade4647a-d73b-4490-b800-cfe68f291690",
+      "name": "match_scam_patterns",
+      "summary": "no known playbook matched",
+      "signals": [],
+      "data": [],
+      "ms": 0,
+      "t": 1794089871194,
+      "origin": "model"
+    },
+    {
+      "type": "llm_call",
+      "model": "nvidia/nemotron-3.5-super-vl-120b-a12b",
+      "purpose": "investigate",
+      "turn": 1,
+      "ms": 4290,
+      "tokens": {
+        "promptTokens": 2397,
+        "completionTokens": 488,
+        "totalTokens": 2885,
+        "reasoningTokens": 142
+      },
+      "toolCalls": 1,
+      "format": "native",
+      "thinking": "low",
+      "t": 1794089875484
+    },
+    {
+      "type": "thought",
+      "model": "nvidia/nemotron-3.5-super-vl-120b-a12b",
+      "text": "All checks are complete. Let me summarize:\n\n1. extract_indicators: No links, no payment requests, no codes asked for, just asks to reply C or R (standard appointment confirmation). No urgency, no threats, no secrecy.\n\n2. check_sender: Landline registered to Richardson Family Clinic, caller ID verified (STIR/SHAKEN level A), number is 4200 days old (~11.5 years), 0 spam reports in 7 days, registered business matches claimed name.\n\n3. match_scam_patterns: No known playbook matched.\n\nThis is clearly a legitimate appointment reminder. I should submit a verdict of \"safe\" with high confidence.",
+      "t": 1794089875484,
+      "turn": 1,
+      "ms": 4290,
+      "usage": {
+        "promptTokens": 2397,
+        "completionTokens": 488,
+        "totalTokens": 2885,
+        "reasoningTokens": 142
+      }
+    },
+    {
+      "type": "guardrail",
+      "changed": false,
+      "ms": 0,
+      "t": 1794089875485
+    },
+    {
+      "type": "verdict",
+      "verdict": {
+        "risk": "safe",
+        "confidence": 0.95,
+        "scamType": "Legitimate message",
+        "headline": "This is a real clinic appointment reminder.",
+        "explanation": "The sender number is a landline registered to Richardson Family Clinic, and the caller ID is fully verified by the carrier network. The message contains no links, no payment requests, no code requests, and no threats—just a standard reply-to-confirm appointment reminder.",
+        "evidence": [
+          {
+            "signal": "Registered sender",
+            "detail": "Landline registered to Richardson Family Clinic",
+            "weight": "high",
+            "direction": "safe",
+            "source": "check_sender"
+          },
+          {
+            "signal": "Caller ID verified",
+            "detail": "STIR/SHAKEN level A verification",
+            "weight": "medium",
+            "direction": "safe",
+            "source": "check_sender"
+          },
+          {
+            "signal": "No scam indicators",
+            "detail": "No links, payments, codes, threats, or secrecy requests",
+            "weight": "high",
+            "direction": "safe",
+            "source": "extract_indicators"
+          },
+          {
+            "signal": "No scam playbook match",
+            "detail": "Message does not match any known scam patterns",
+            "weight": "medium",
+            "direction": "safe",
+            "source": "match_scam_patterns"
+          }
+        ],
+        "actions": [
+          {
+            "id": "mark_safe",
+            "label": "Mark as safe"
+          }
+        ],
+        "uncertainty": "None"
+      },
+      "model": "nvidia/nemotron-3.5-super-vl-120b-a12b",
+      "t": 1794089875485
+    },
+    {
+      "type": "done",
+      "totalMs": 11431,
+      "llmCalls": 3,
+      "toolCalls": 3,
+      "t": 1794089875485,
+      "metrics": {
+        "llmMs": 11427,
+        "toolMs": 0,
+        "tokens": {
+          "promptTokens": 4524,
+          "completionTokens": 920,
+          "totalTokens": 5444,
+          "reasoningTokens": 435
+        },
+        "byModel": {
+          "nvidia/nemotron-3.5-lightning-30b-a3b": {
+            "calls": 1,
+            "ms": 482,
+            "tokens": {
+              "promptTokens": 253,
+              "completionTokens": 26,
+              "totalTokens": 279
+            }
+          },
+          "nvidia/nemotron-3.5-super-vl-120b-a12b": {
+            "calls": 2,
+            "ms": 10945,
+            "tokens": {
+              "promptTokens": 4271,
+              "completionTokens": 894,
+              "totalTokens": 5165,
+              "reasoningTokens": 435
+            }
+          }
+        },
+        "budgetMs": 25000
+      }
+    }
+  ]
+}
