@@ -128,7 +128,9 @@ export function brandCheck(hostname: string, domain: string): { officialFor?: st
   return {};
 }
 
-async function rdap(domain: string): Promise<{ registeredOn?: string; registrar?: string } | null> {
+async function rdap(domain: string): Promise<{
+  // Only well-formed public registrable names go to rdap.org (no localhost, IPs, intranet names).
+  if (!/^(?=.{4,253}$)(?:[a-z0-9](?:[a-z0-9-]{0,61}[a-z0-9])?\.)+(?:[a-z]{2,63}|xn--[a-z0-9-]{2,59})$/.test(domain) || /^[\d.]+$/.test(domain)) return null; registeredOn?: string; registrar?: string } | null> {
   // Evals and offline tests can skip the live registry (it only times out in a sandbox).
   if (process.env.SECONDLOOK_NO_RDAP === "1") return null;
   const ctrl = new AbortController();
