@@ -797,7 +797,7 @@ Start with your one-line Plan, then investigate with your tools, then call submi
     };
 
     // Reasoning and plan.
-    const reasoning = res.reasoning.replace(/<TOOLCALL>[\s\S]*?(?:<\/TOOLCALL>|$)/gi, "").trim();
+    let reasoning = res.reasoning.replace(/<TOOLCALL>[\s\S]*?(?:<\/TOOLCALL>|$)/gi, "").trim();
     if (calls.length && !run.planEmitted) {
       const fromText = extractPlan(rest);
       const p = fromText ?? extractPlan(reasoning);
@@ -805,6 +805,7 @@ Start with your one-line Plan, then investigate with your tools, then call submi
       if (p) {
         run.planEmitted = true;
         if (fromText) rest = fromText.rest;
+        else reasoning = p.rest;
         emit({ type: "plan", model: DEEP_MODEL, text: p.text, steps: p.steps, source: "model", t: now(), ...takeMeta() });
       } else if (toolSteps.length) {
         run.planEmitted = true;
