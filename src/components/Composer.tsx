@@ -51,7 +51,7 @@ export function Composer({ onSend, onClose }: { onSend: (m: Omit<InboxMessage, "
                 setDisplayName(ex.m.displayName ?? "");
                 setBody(ex.m.body);
               }}
-              className="rounded-full border border-line px-3 py-1 text-[13px] font-medium hover:border-ink/40"
+              className="min-h-8 rounded-full border border-line px-3 py-1 text-[13px] font-medium hover:border-ink/40"
             >
               {ex.label}
             </button>
@@ -81,10 +81,10 @@ export function Composer({ onSend, onClose }: { onSend: (m: Omit<InboxMessage, "
           <textarea value={body} onChange={(e) => setBody(e.target.value)} rows={5} required placeholder="Paste the message here" className="rounded-lg border border-line px-3 py-2 text-sm font-normal leading-snug" />
         </label>
         <div className="mt-5 flex justify-end gap-2">
-          <button type="button" onClick={() => ref.current?.close()} className="rounded-full px-4 py-2 text-sm font-semibold text-muted hover:text-ink">
+          <button type="button" onClick={() => ref.current?.close()} className="min-h-9 rounded-full px-4 text-sm font-semibold text-muted hover:text-ink">
             Cancel
           </button>
-          <button type="submit" className="rounded-full bg-ink px-5 py-2 text-sm font-semibold text-white hover:bg-ink-soft">
+          <button type="submit" className="min-h-9 rounded-full bg-ink px-5 text-sm font-semibold text-white hover:bg-ink-soft">
             Deliver to phone
           </button>
         </div>
