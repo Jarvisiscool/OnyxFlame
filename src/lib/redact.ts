@@ -33,9 +33,27 @@ const RULES: Rule[] = [
   },
   { kind: "SSN", re: /\b\d{3}-\d{2}-\d{4}\b/g, replace: () => "[SSN]" },
   {
+    // Unformatted 9-digit SSNs, only next to an SSN keyword so other numbers are left alone.
+    kind: "SSN",
+    re: /\b(ssn|social security(?: number| no\.?)?|social)(\s*(?:#|is|:)?\s*:?\s*)(\d{9})\b/gi,
+    replace: (_m, word, sep) => `${word}${sep}[SSN]`,
+  },
+  {
+    // Email addresses in the message body: hide the person, keep the domain (it can be evidence).
+    kind: "email address",
+    re: /\b[\w.+-]+@([\w-]+(?:\.[\w-]+)+)\b/g,
+    replace: (_m, domain) => `[EMAIL]@${domain}`,
+  },
+  {
     kind: "one-time code",
-    re: /\b(code|passcode|pin|otp)(\s*(?:is|:)?\s*)(\d{4,8})\b/gi,
+    re: /\b(code|passcode|pin|otp|c[oó]digo)(\s*(?:is|es)?\s*:?\s*)(\d{4,8}|\d{2,4}(?:[ -]\d{2,4}){1,3})(?![\d-])/gi,
     replace: (_m, word, sep) => `${word}${sep}[CODE]`,
+  },
+  {
+    // "G-482913 is your Google verification code", "482913 is your code"
+    kind: "one-time code",
+    re: /\b(?:[A-Z]{1,3}-)?\d{4,8}(?=\s+is your\b[^.?!\n]{0,40}\b(?:code|passcode|pin)\b)/g,
+    replace: () => "[CODE]",
   },
   {
     kind: "account number",
