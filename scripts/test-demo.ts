@@ -58,7 +58,7 @@ const fail = (id: string, why: string) => failures.push(`${id}: ${why}`);
     // Redaction: what the models see must not contain the code or the owner's family names.
     const redEvent = events.find((e) => e.type === "redaction");
     const redacted = redEvent && redEvent.type === "redaction" ? redEvent.redacted : redact(m.body).redacted;
-    for (const name of ["Maria", "Sofia"]) {
+    for (const name of ["Bob", "Sofia"]) {
       if (m.body.includes(name) && redacted.includes(name)) fail(m.id, `name "${name}" not redacted`);
     }
     if (m.id === "otp") {
@@ -70,12 +70,12 @@ const fail = (id: string, why: string) => failures.push(`${id}: ${why}`);
     // The verdict text itself must not leak redacted values either.
     const out = `${v.headline} ${v.explanation} ${v.evidence.map((e) => e.detail).join(" ")}`;
     if (m.id === "otp" && /\b482913\b/.test(out)) fail(m.id, "verdict text leaks the one-time code");
-    if (/\b(Maria|Sofia)\b/.test(out)) fail(m.id, "verdict text leaks a redacted name");
+    if (/\b(Bob|Sofia)\b/.test(out)) fail(m.id, "verdict text leaks a redacted name");
   }
 
   // Redaction unit checks (independent of the demo copy).
-  const r = redact("Hi Maria Lopez, your code is 551203. Sofia's PIN: 4417. Card 4111 1111 1111 1111.");
-  for (const leak of ["Maria", "Lopez", "Sofia", "551203", "4417", "4111 1111 1111 1111"]) {
+  const r = redact("Hi Bob Lopez, your code is 551203. Sofia's PIN: 4417. Card 4111 1111 1111 1111.");
+  for (const leak of ["Bob", "Lopez", "Sofia", "551203", "4417", "4111 1111 1111 1111"]) {
     if (r.redacted.includes(leak)) fail("redact()", `"${leak}" survived redaction → ${r.redacted}`);
   }
 

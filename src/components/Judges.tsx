@@ -36,10 +36,10 @@ export function Judges({ id, status }: { id: string | null; status: Status }) {
     const f = d.family.find((x) => x.id === d.line);
     if (!f) return null;
     return (
-      <Card title={`What Maria can see on ${f.relation === "Dad" ? "Dad's" : `${f.name}'s`} line`}>
+      <Card title={`What Bob can see on ${f.relation === "Dad" ? "Dad's" : `${f.name}'s`} line`}>
         <div className="rb">
           <div className="rl">
-            <b>Shared with Maria</b>
+            <b>Shared with Bob</b>
           </div>
           <div className="checks">
             {["Scam alerts, verdict and confidence", "Why it was flagged, in plain words", "Recovery progress and \"is okay\" status"].map((t) => (
@@ -63,7 +63,7 @@ export function Judges({ id, status }: { id: string | null; status: Status }) {
         </div>
         <div className="dash" />
         <p className="priv">
-          {f.relation} opted in to share alerts with Maria and can turn it off any time. These family alerts are pre-computed demo data; Maria&apos;s own messages are checked live.
+          {f.relation} opted in to share alerts with Bob and can turn it off any time. These family alerts are pre-computed demo data; Bob&apos;s own messages are checked live.
         </p>
       </Card>
     );

@@ -1,7 +1,7 @@
 import type { InboxMessage } from "@/lib/types";
 
 /**
- * Synthetic demo messages for "Maria Lopez", a T-Mobile customer in Richardson, TX.
+ * Synthetic demo messages for "Bob Lopez", a T-Mobile customer in Richardson, TX.
  * All numbers use fictional 555 ranges; all scam domains are invented.
  * Delivered one at a time in this order during the demo.
  */
@@ -34,14 +34,14 @@ export const DEMO_INBOX: Omit<InboxMessage, "receivedAt">[] = [
     channel: "sms",
     from: "52466",
     displayName: "T-Mobile",
-    body: "T-Mobile: Hi Maria, your bill for $85.00 is ready. Autopay will run on 11/14. See details at t-mobile.com/bill. No reply needed.",
+    body: "T-Mobile: Hi Bob, your bill for $85.00 is ready. Autopay will run on 11/14. See details at t-mobile.com/bill. No reply needed.",
     label: "legit",
   },
   {
     id: "sim_swap",
     channel: "sms",
     from: "+1 (972) 555-0164",
-    body: "Hi Maria, this is Jake from T-Mobile Support. We're upgrading your SIM to our new 5G network today. You'll get a 6-digit code in a minute. Please reply with it so I can finish activation, or your service will be interrupted.",
+    body: "Hi Bob, this is Jake from T-Mobile Support. We're upgrading your SIM to our new 5G network today. You'll get a 6-digit code in a minute. Please reply with it so I can finish activation, or your service will be interrupted.",
     label: "scam",
   },
   {
@@ -55,14 +55,14 @@ export const DEMO_INBOX: Omit<InboxMessage, "receivedAt">[] = [
     id: "family",
     channel: "sms",
     from: "+1 (214) 555-0186",
-    body: "Hi Mom it's me, I dropped my phone in the toilet 😩 this is my new number. Can you help me pay a bill today? It's urgent, I'll pay you back tomorrow. Can you send $480 by Zelle?",
+    body: "Hi Dad it's me, I dropped my phone in the toilet 😩 this is my new number. Can you help me pay a bill today? It's urgent, I'll pay you back tomorrow. Can you send $480 by Zelle?",
     label: "scam",
   },
   {
     id: "reward",
     channel: "sms",
     from: "+1 (213) 555-0117",
-    body: "T-Mobile Rewards: Maria, your 12,400 loyalty points ($250 value) expire TONIGHT. Redeem before 11:59 PM: t-mobile-rewards.club/claim",
+    body: "T-Mobile Rewards: Bob, your 12,400 loyalty points ($250 value) expire TONIGHT. Redeem before 11:59 PM: t-mobile-rewards.club/claim",
     label: "scam",
   },
   {

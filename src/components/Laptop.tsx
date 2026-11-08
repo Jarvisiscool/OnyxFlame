@@ -79,7 +79,7 @@ export function Laptop({
                 </nav>
                 <div className="lt-fam">
                   <div className="lt-h">Family plan</div>
-                  {[{ id: "maria", name: "Maria", sub: "You" }, ...d.family.map((f) => ({ id: f.id, name: f.name, sub: f.relation }))].map((l) => (
+                  {[{ id: "maria", name: "Bob", sub: "You" }, ...d.family.map((f) => ({ id: f.id, name: f.name, sub: f.relation }))].map((l) => (
                     <button
                       key={l.id}
                       aria-pressed={d.line === l.id && s.name === "home"}

@@ -21,7 +21,7 @@ const NEXT_LABEL: Record<string, string> = {
   bill: "real T-Mobile bill",
   sim_swap: "SIM-swap text",
   wrong_number: "wrong-number opener",
-  family: "\"Hi Mom\" text",
+  family: "\"Hi Dad\" text",
   reward: "fake rewards text",
   clinic: "clinic reminder",
 };
@@ -29,7 +29,7 @@ const NEXT_LABEL: Record<string, string> = {
 interface Step {
   key: string;
   label: string;
-  group: "Maria's phone" | "Family lines" | "Practice & check";
+  group: "Bob's phone" | "Family lines" | "Practice & check";
   screen?: Screen;
   line: Line;
   disabled?: boolean;
@@ -244,13 +244,13 @@ export function App() {
   const steps: Step[] = useMemo(() => {
     const t = target?.id;
     return [
-      { key: "login", label: "Sign in", group: "Maria's phone", screen: { name: "home" }, line: "maria" },
-      { key: "home", label: "Before", group: "Maria's phone", screen: { name: "home" }, line: "maria" },
-      { key: "lock", label: device === "laptop" ? "Warned: notification" : "Warned: lock screen", group: "Maria's phone", screen: { name: "lock" }, line: "maria" },
-      { key: "thread", label: "Warned: in the thread", group: "Maria's phone", screen: t ? { name: "thread", id: t } : undefined, line: "maria", disabled: !t },
-      { key: "pause", label: "The calm pause", group: "Maria's phone", screen: t ? { name: "pause", id: t } : undefined, line: "maria", disabled: !t },
-      { key: "timeline", label: "After: timeline", group: "Maria's phone", screen: t ? { name: "timeline", id: t, recover: true } : undefined, line: "maria", disabled: !t },
-      { key: "activity", label: "Activity log", group: "Maria's phone", screen: { name: "activity" }, line: "maria" },
+      { key: "login", label: "Sign in", group: "Bob's phone", screen: { name: "home" }, line: "maria" },
+      { key: "home", label: "Before", group: "Bob's phone", screen: { name: "home" }, line: "maria" },
+      { key: "lock", label: device === "laptop" ? "Warned: notification" : "Warned: lock screen", group: "Bob's phone", screen: { name: "lock" }, line: "maria" },
+      { key: "thread", label: "Warned: in the thread", group: "Bob's phone", screen: t ? { name: "thread", id: t } : undefined, line: "maria", disabled: !t },
+      { key: "pause", label: "The calm pause", group: "Bob's phone", screen: t ? { name: "pause", id: t } : undefined, line: "maria", disabled: !t },
+      { key: "timeline", label: "After: timeline", group: "Bob's phone", screen: t ? { name: "timeline", id: t, recover: true } : undefined, line: "maria", disabled: !t },
+      { key: "activity", label: "Activity log", group: "Bob's phone", screen: { name: "activity" }, line: "maria" },
       ...family.map((f): Step => ({
         key: f.id,
         label: f.id === "dad" ? `Dad (${f.name}, ${f.age})` : `${f.name} (${f.age})`,
@@ -384,7 +384,7 @@ export function App() {
         ? `Second Look couldn't check the message from ${senderName(focusMsg)}.`
         : `Checking a new message from ${senderName(focusMsg)} privately.`;
 
-  const groups = ["Maria's phone", "Family lines", "Practice & check"] as const;
+  const groups = ["Bob's phone", "Family lines", "Practice & check"] as const;
 
   return (
     <DemoCtx.Provider value={ctl}>

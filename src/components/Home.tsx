@@ -30,7 +30,7 @@ export function Nav() {
 function LineSwitcher() {
   const d = useDemo();
   const lines: { id: Line; name: string; sub: string; initial: string; bg: string; fg: string; alert?: boolean }[] = [
-    { id: "maria", name: "Maria", sub: "You", initial: "M", bg: "var(--av-m-bg, #fcdcec)", fg: "var(--av-m-fg, #8a0047)" },
+    { id: "maria", name: "Bob", sub: "You", initial: "B", bg: "var(--av-m-bg, #fcdcec)", fg: "var(--av-m-fg, #8a0047)" },
     ...d.family.map((f, i) => ({
       id: f.id,
       name: f.relation,
@@ -275,13 +275,13 @@ export function Home({ focusChecker }: { focusChecker?: boolean }) {
             </div>
           ) : checking ? (
             <>
-              <h1 className="hero">We&apos;ve got you, Maria.</h1>
+              <h1 className="hero">We&apos;ve got you, Bob.</h1>
               <div className="checking-card" role="status">
                 <span className="spin" aria-hidden /> Checking a new message from {senderName(checking)} privately…
               </div>
             </>
           ) : (
-            <h1 className="hero">We&apos;ve got you, Maria.</h1>
+            <h1 className="hero">We&apos;ve got you, Bob.</h1>
           )}
           <div className="card prot" style={{ marginTop: 12 }}>
             <span className="shield">
@@ -334,7 +334,7 @@ export function Home({ focusChecker }: { focusChecker?: boolean }) {
                 </button>
               ))
             ) : (
-              <p className="empty">No new messages. Press N (or &ldquo;Deliver a message&rdquo;) to send one to Maria&apos;s phone.</p>
+              <p className="empty">No new messages. Press N (or &ldquo;Deliver a message&rdquo;) to send one to Bob&apos;s phone.</p>
             )}
           </div>
           <button className="teaser" onClick={() => d.go({ name: "practice" })}>

@@ -73,7 +73,7 @@ const RULES: Rule[] = [
 ];
 
 /** Names of the (synthetic) phone owner and family, as an on-device app would know them. */
-const KNOWN_NAMES = ["Maria", "Maria Lopez", "Sofia", "Sofia Lopez"];
+const KNOWN_NAMES = ["Bob", "Bob Lopez", "Sofia", "Sofia Lopez"];
 
 export interface RedactionResult {
   redacted: string;

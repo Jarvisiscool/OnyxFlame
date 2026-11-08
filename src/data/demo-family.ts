@@ -1,8 +1,8 @@
 import type { Channel, Risk } from "@/lib/types";
 
 /**
- * Synthetic alert summaries for the other lines on Maria's family plan.
- * These are pre-computed (no live check): Maria only ever sees alerts, verdicts and recovery
+ * Synthetic alert summaries for the other lines on Bob's family plan.
+ * These are pre-computed (no live check): Bob only ever sees alerts, verdicts and recovery
  * status for these lines, never message contents, and only because each person opted in.
  */
 export interface FamilyAlert {

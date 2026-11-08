@@ -54,7 +54,7 @@ export function Phone({ notifId, dismissNotif, toastText }: { notifId: string | 
   return (
     <div className="device-box">
       <div className="device">
-        <div className="screen" aria-label="Maria's phone" role="region">
+        <div className="screen" aria-label="Bob's phone" role="region">
           <div className="island" aria-hidden />
           <div className={`sb${s.name === "lock" ? " dark" : ""}`} aria-hidden>
             <span className="tnum">{s.name === "lock" ? "" : hm(now)}</span>
@@ -221,7 +221,7 @@ function LockScreen({ now }: { now: Date | null }) {
           ))}
         </div>
       ) : (
-        <p className="lock-hint">No notifications yet. Press N to deliver the next message to Maria&apos;s phone.</p>
+        <p className="lock-hint">No notifications yet. Press N to deliver the next message to Bob&apos;s phone.</p>
       )}
       <button className="lock-open" onClick={() => d.go({ name: "home" })}>
         Unlock
