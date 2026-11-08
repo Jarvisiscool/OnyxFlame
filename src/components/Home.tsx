@@ -274,13 +274,13 @@ export function Home({ focusChecker }: { focusChecker?: boolean }) {
             </div>
           ) : checking ? (
             <>
-              <h1 className="hero">Breathe. We check the scary ones for you.</h1>
+              <h1 className="hero">We&apos;ve got you, Maria.</h1>
               <div className="checking-card" role="status">
                 <span className="spin" aria-hidden /> Checking a new message from {senderName(checking)} privately…
               </div>
             </>
           ) : (
-            <h1 className="hero">Breathe. We check the scary ones for you.</h1>
+            <h1 className="hero">We&apos;ve got you, Maria.</h1>
           )}
           <div className="card prot" style={{ marginTop: 12 }}>
             <span className="shield">

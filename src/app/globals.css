@@ -2384,3 +2384,10 @@ mark,
   flex-wrap: wrap;
   align-items: baseline;
 }
+
+/* Home headline always fits on one line. */
+.hero {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
