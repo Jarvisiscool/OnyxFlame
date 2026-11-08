@@ -10,6 +10,7 @@ import { Phone } from "./Phone";
 import { Judges, HowItWorks } from "./Judges";
 import { Logo, gradeWords, senderName } from "./ui";
 import { ThemeToggle } from "./ThemeToggle";
+import { TOUR } from "./tour";
 
 type Status = { live: boolean; fastModel: string; deepModel: string; recordings: number };
 
@@ -62,6 +63,7 @@ export function App() {
   const [recovery, setRecovery] = useState<Record<string, RecoveryState>>({});
   const [toastText, setToastText] = useState<string | null>(null);
   const [sheet, setSheet] = useState<SheetName | null>(null);
+  const [tour, setTour] = useState<{ i: number; caption: string } | null>(null);
   const [labels, setLabels] = useState<Labels>({ texts: true, calls: true, pause: true });
   const [streak, setStreak] = useState(3);
   const [lessonInfo, setLessonInfo] = useState<LessonInfo | null>(null);
@@ -251,14 +253,52 @@ export function App() {
     [go],
   );
 
+  /* ---------------- Video mode: scripted auto-play with captions ---------------- */
+  const tourApi = useRef({ deliverNext, runStep, steps, doReset });
+  useEffect(() => {
+    tourApi.current = { deliverNext, runStep, steps, doReset };
+  });
+  const tourToken = useRef(0);
+  const stopTour = useCallback(() => {
+    tourToken.current++;
+    setTour(null);
+  }, []);
+  const playTour = useCallback(async () => {
+    const token = ++tourToken.current;
+    const sleep = (ms: number) => new Promise((r) => setTimeout(r, ms));
+    tourApi.current.doReset();
+    await sleep(400);
+    for (let i = 0; i < TOUR.length; i++) {
+      if (tourToken.current !== token) return;
+      const sc = TOUR[i];
+      const api = tourApi.current;
+      if (sc.action.kind === "deliver") api.deliverNext();
+      if (sc.action.kind === "reset") api.doReset();
+      if (sc.action.kind === "step") {
+        const key = sc.action.key;
+        const st = api.steps.find((x) => x.key === key);
+        if (st) api.runStep(st);
+      }
+      setTour({ i, caption: sc.caption });
+      await sleep(sc.ms);
+    }
+    if (tourToken.current === token) setTour(null);
+  }, []);
+
+
   useEffect(() => {
     function onKey(e: KeyboardEvent) {
       const el = e.target as HTMLElement;
       if (e.key === "Escape") {
         setSheet(null);
+        stopTour();
         return;
       }
       if (el.closest("input, textarea, select, [role=dialog]") || e.metaKey || e.ctrlKey || e.altKey) return;
+      if (e.key === "p" || e.key === "P") {
+        playTour();
+        return;
+      }
       if (e.key === "n" || e.key === "N") deliverNext();
       if (e.key === "ArrowRight" || e.key === "ArrowLeft") {
         const enabled = steps.filter((s) => !s.disabled);
@@ -272,7 +312,8 @@ export function App() {
     }
     window.addEventListener("keydown", onKey);
     return () => window.removeEventListener("keydown", onKey);
-  }, [deliverNext, steps, activeKey, runStep]);
+  }, [deliverNext, steps, activeKey, runStep, playTour, stopTour]);
+
 
   const ctl: Ctl = {
     inbox,
@@ -325,7 +366,7 @@ export function App() {
 
   return (
     <DemoCtx.Provider value={ctl}>
-      <main className="stage" style={{ ["--s" as string]: scale }}>
+      <main className={tour ? "stage touring" : "stage"} style={{ ["--s" as string]: scale }}>
         <section className="stage-left" aria-label="Presenter controls">
           <div>
             <div className="brand">
@@ -373,6 +414,7 @@ export function App() {
             <button ref={howBtn} onClick={() => setHow(true)}>
               How it works &amp; results
             </button>
+            <button onClick={() => (tour ? stopTour() : playTour())} aria-keyshortcuts="P">{tour ? "Stop video mode" : "Play video demo (P)"}</button>
             <button onClick={doReset}>Reset demo</button>
             <ThemeToggle />
             {status && status.recordings > 0 && (
@@ -391,6 +433,14 @@ export function App() {
         <div className="sr-only" aria-live="polite">
           {announce}
         </div>
+        {tour && (
+          <div className="tour-cap" role="status" aria-live="polite">
+            <span className="tour-n tnum">
+              {tour.i + 1} / {TOUR.length}
+            </span>
+            {tour.caption}
+          </div>
+        )}
       </main>
       {how && (
         <HowItWorks
