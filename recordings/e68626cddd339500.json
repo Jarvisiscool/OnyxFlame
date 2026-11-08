@@ -1,0 +1,533 @@
+{
+  "key": "e68626cddd339500",
+  "message": {
+    "id": "reward-1794089816733",
+    "channel": "sms",
+    "from": "+1 (213) 555-0117",
+    "redactedBody": "T-Mobile Rewards: [NAME], your 12,400 loyalty points ($250 value) expire TONIGHT. Redeem before 11:59 PM: t-mobile-rewards.club/claim"
+  },
+  "recordedAt": "2026-11-07T22:17:44.026Z",
+  "events": [
+    {
+      "type": "start",
+      "mode": "live",
+      "models": {
+        "fast": "nvidia/nemotron-3.5-lightning-30b-a3b",
+        "deep": "nvidia/nemotron-3.5-super-vl-120b-a12b"
+      },
+      "t": 1794089856010,
+      "budgetMs": 25000
+    },
+    {
+      "type": "redaction",
+      "redacted": "T-Mobile Rewards: [NAME], your 12,400 loyalty points ($250 value) expire TONIGHT. Redeem before 11:59 PM: t-mobile-rewards.club/claim",
+      "items": [
+        {
+          "kind": "personal name",
+          "count": 1
+        }
+      ],
+      "t": 1794089856010
+    },
+    {
+      "type": "llm_call",
+      "model": "nvidia/nemotron-3.5-lightning-30b-a3b",
+      "purpose": "triage",
+      "ms": 436,
+      "tokens": {
+        "promptTokens": 245,
+        "completionTokens": 25,
+        "totalTokens": 270
+      },
+      "toolCalls": 0,
+      "format": "none",
+      "thinking": "off",
+      "t": 1794089856446
+    },
+    {
+      "type": "triage",
+      "model": "nvidia/nemotron-3.5-lightning-30b-a3b",
+      "risk": "scam",
+      "confidence": 0.95,
+      "reason": "Points expire tonight, urgent redemption link",
+      "ms": 436,
+      "t": 1794089856446,
+      "usage": {
+        "promptTokens": 245,
+        "completionTokens": 25,
+        "totalTokens": 270
+      }
+    },
+    {
+      "type": "route",
+      "decision": "escalate",
+      "reason": "Escalating to the deep investigator: has links, claims to be T-Mobile, mentions money, triage flagged scam.",
+      "t": 1794089856446
+    },
+    {
+      "type": "llm_call",
+      "model": "nvidia/nemotron-3.5-super-vl-120b-a12b",
+      "purpose": "investigate",
+      "turn": 0,
+      "ms": 2049,
+      "tokens": {
+        "promptTokens": 1871,
+        "completionTokens": 262,
+        "totalTokens": 2133,
+        "reasoningTokens": 86
+      },
+      "toolCalls": 5,
+      "format": "native",
+      "thinking": "low",
+      "t": 1794089858495
+    },
+    {
+      "type": "plan",
+      "model": "nvidia/nemotron-3.5-super-vl-120b-a12b",
+      "text": "Extract message indicators, check the sender number, investigate the reward link domain, verify T-Mobile's official contact info, and compare against known scam patterns.",
+      "steps": [
+        "Extract message indicators, check the sender number, investigate the reward link domain, verify T-Mobile's official contact info, and compare against known scam patterns"
+      ],
+      "source": "model",
+      "t": 1794089858495,
+      "ms": 2049,
+      "usage": {
+        "promptTokens": 1871,
+        "completionTokens": 262,
+        "totalTokens": 2133,
+        "reasoningTokens": 86
+      }
+    },
+    {
+      "type": "thought",
+      "model": "nvidia/nemotron-3.5-super-vl-120b-a12b",
+      "text": "Let me start by following the instructions. I need to:\n1. Write one short line starting with \"Plan:\" (max 30 words)\n2. Then call tools - extract_indicators first, then check_link, check_sender, lookup_official_contact, match_scam_patterns\n\nLet me start with the Plan line and then call extract_indicators and check_sender in parallel since they're independent.",
+      "t": 1794089858495,
+      "turn": 0
+    },
+    {
+      "type": "tool_call",
+      "id": "call-60d111ae-d8a1-4871-8f98-036f6523d62d",
+      "name": "extract_indicators",
+      "args": {},
+      "t": 1794089858495,
+      "origin": "model",
+      "turn": 0,
+      "format": "native",
+      "model": "nvidia/nemotron-3.5-super-vl-120b-a12b"
+    },
+    {
+      "type": "tool_call",
+      "id": "call-757e1e3f-bf45-4d45-8cdb-af4a25d5d1f0",
+      "name": "check_sender",
+      "args": {
+        "sender": "+1 (213) 555-0117",
+        "claimed_name": "T-Mobile"
+      },
+      "t": 1794089858495,
+      "origin": "model",
+      "turn": 0,
+      "format": "native",
+      "model": "nvidia/nemotron-3.5-super-vl-120b-a12b"
+    },
+    {
+      "type": "tool_call",
+      "id": "call-bfe8204f-3f63-4290-9d4d-095c2dcd118d",
+      "name": "check_link",
+      "args": {
+        "url": "t-mobile-rewards.club/claim"
+      },
+      "t": 1794089858495,
+      "origin": "model",
+      "turn": 0,
+      "format": "native",
+      "model": "nvidia/nemotron-3.5-super-vl-120b-a12b"
+    },
+    {
+      "type": "tool_call",
+      "id": "call-e45a9cad-1348-497c-818f-d1ff3c87da32",
+      "name": "lookup_official_contact",
+      "args": {
+        "organization": "T-Mobile"
+      },
+      "t": 1794089858495,
+      "origin": "model",
+      "turn": 0,
+      "format": "native",
+      "model": "nvidia/nemotron-3.5-super-vl-120b-a12b"
+    },
+    {
+      "type": "tool_call",
+      "id": "call-ecdffa6a-2fb9-45a1-8bfc-6493471f4f6f",
+      "name": "match_scam_patterns",
+      "args": {},
+      "t": 1794089858495,
+      "origin": "model",
+      "turn": 0,
+      "format": "native",
+      "model": "nvidia/nemotron-3.5-super-vl-120b-a12b"
+    },
+    {
+      "type": "tool_result",
+      "id": "call-60d111ae-d8a1-4871-8f98-036f6523d62d",
+      "name": "extract_indicators",
+      "summary": "1 link · claims T-Mobile · money $250 · urgency: tonight, expire",
+      "signals": [
+        {
+          "signal": "Pressure to act fast",
+          "detail": "Urgent wording: \"tonight\", \"expire\"",
+          "weight": "medium",
+          "direction": "risk",
+          "source": "Message analysis"
+        }
+      ],
+      "data": {
+        "urls": [
+          "t-mobile-rewards.club/claim"
+        ],
+        "phones": [],
+        "emails": [],
+        "amounts": [
+          "$250"
+        ],
+        "claimedOrgs": [
+          "T-Mobile"
+        ],
+        "urgency": [
+          "tonight",
+          "expire"
+        ],
+        "paymentMethods": [],
+        "asksForCode": false,
+        "deliversCode": false,
+        "asksToReply": false,
+        "asksToCall": false,
+        "secrecy": false,
+        "threats": [],
+        "riskyRails": [],
+        "railsAsked": [],
+        "p2pApps": [],
+        "requestsPayment": false,
+        "giftCardPayment": false,
+        "moveMoney": false,
+        "asksForPersonalInfo": false,
+        "callbackAlarm": false,
+        "replyYesNo": false,
+        "qrCode": false,
+        "offPlatformChat": [],
+        "maxAmount": 250,
+        "urgencyCount": 2,
+        "capsRatio": 0.1511627906976744
+      },
+      "ms": 2,
+      "t": 1794089858498,
+      "origin": "model"
+    },
+    {
+      "type": "tool_result",
+      "id": "call-757e1e3f-bf45-4d45-8cdb-af4a25d5d1f0",
+      "name": "check_sender",
+      "summary": "voip, 3d old, 412 reports",
+      "signals": [
+        {
+          "signal": "Not a registered sender",
+          "detail": "Claims to be T-Mobile, but comes from an ordinary phone number that isn't on T-Mobile's registered sender list",
+          "weight": "medium",
+          "direction": "risk",
+          "source": "Carrier network signals (simulated)"
+        },
+        {
+          "signal": "New number",
+          "detail": "This number was activated 3 days ago",
+          "weight": "medium",
+          "direction": "risk",
+          "source": "Carrier network signals (simulated)"
+        },
+        {
+          "signal": "Internet phone number",
+          "detail": "VoIP numbers are cheap to create and discard",
+          "weight": "low",
+          "direction": "risk",
+          "source": "Carrier network signals (simulated)"
+        },
+        {
+          "signal": "Mass texting",
+          "detail": "Messaged 8,790 different people in the last 24 hours",
+          "weight": "high",
+          "direction": "risk",
+          "source": "Carrier network signals (simulated)"
+        },
+        {
+          "signal": "Reported by others",
+          "detail": "412 people reported this sender this week",
+          "weight": "high",
+          "direction": "risk",
+          "source": "Carrier network signals (simulated)"
+        }
+      ],
+      "data": {
+        "sender": "+1 (213) 555-0117",
+        "lineType": "voip",
+        "numberAgeDays": 3,
+        "messages24h": 8800,
+        "distinctRecipients24h": 8790,
+        "spamReports7d": 412
+      },
+      "ms": 1,
+      "t": 1794089858498,
+      "origin": "model"
+    },
+    {
+      "type": "tool_result",
+      "id": "call-bfe8204f-3f63-4290-9d4d-095c2dcd118d",
+      "name": "check_link",
+      "summary": "t-mobile-rewards.club: impersonates T-Mobile, 4 days old, .club ending",
+      "signals": [
+        {
+          "signal": "Lookalike domain",
+          "detail": "The link goes to t-mobile-rewards.club, which wraps the brand name \"tmobile\" in extra words. It is not owned by T-Mobile.",
+          "weight": "high",
+          "direction": "risk",
+          "source": "Lookalike detector"
+        },
+        {
+          "signal": "Brand-new domain",
+          "detail": "The site t-mobile-rewards.club was registered 4 days ago",
+          "weight": "high",
+          "direction": "risk",
+          "source": "Domain registry (simulated for demo domains)"
+        },
+        {
+          "signal": "High-abuse ending",
+          "detail": ".club domains are cheap and common in scam texts",
+          "weight": "medium",
+          "direction": "risk",
+          "source": "Link analysis"
+        }
+      ],
+      "data": {
+        "url": "t-mobile-rewards.club/claim",
+        "hostname": "t-mobile-rewards.club",
+        "registrableDomain": "t-mobile-rewards.club",
+        "impersonates": "T-Mobile",
+        "lookalikeReason": "wraps the brand name \"tmobile\" in extra words",
+        "registrySource": "simulated",
+        "riskyTld": true,
+        "shortener": false,
+        "ipAddress": false,
+        "punycode": false,
+        "usesHttps": false,
+        "registeredOn": "2026-11-03T22:17:38.497Z",
+        "registrar": "Offshore privacy registrar (synthetic)",
+        "ageDays": 4
+      },
+      "ms": 1,
+      "t": 1794089858498,
+      "origin": "model"
+    },
+    {
+      "type": "tool_result",
+      "id": "call-e45a9cad-1348-497c-818f-d1ff3c87da32",
+      "name": "lookup_official_contact",
+      "summary": "T-Mobile: Dial 611 from your T-Mobile phone, or open the T-Life app",
+      "signals": [],
+      "data": {
+        "org": "T-Mobile",
+        "officialDomains": [
+          "t-mobile.com",
+          "tmobile.com"
+        ],
+        "safeContact": "Dial 611 from your T-Mobile phone, or open the T-Life app",
+        "url": "https://www.t-mobile.com",
+        "neverAsks": [
+          "your account PIN or a verification code by text",
+          "you to redeem rewards through a link from an unknown number",
+          "payment by gift card"
+        ]
+      },
+      "ms": 0,
+      "t": 1794089858498,
+      "origin": "model"
+    },
+    {
+      "type": "tool_result",
+      "id": "call-ecdffa6a-2fb9-45a1-8bfc-6493471f4f6f",
+      "name": "match_scam_patterns",
+      "summary": "Expiring rewards / prize (100%)",
+      "signals": [
+        {
+          "signal": "Matches \"Expiring rewards / prize\" playbook",
+          "detail": "Claims points, a prize or a refund will expire unless claimed through a link.",
+          "weight": "high",
+          "direction": "risk",
+          "source": "Scam pattern library"
+        }
+      ],
+      "data": [
+        {
+          "id": "rewards",
+          "name": "Expiring rewards / prize",
+          "description": "Claims points, a prize or a refund will expire unless claimed through a link.",
+          "tactics": [
+            "greed",
+            "urgency"
+          ],
+          "score": 1
+        }
+      ],
+      "ms": 0,
+      "t": 1794089858498,
+      "origin": "model"
+    },
+    {
+      "type": "llm_call",
+      "model": "nvidia/nemotron-3.5-super-vl-120b-a12b",
+      "purpose": "investigate",
+      "turn": 1,
+      "ms": 5527,
+      "tokens": {
+        "promptTokens": 3191,
+        "completionTokens": 1073,
+        "totalTokens": 4264,
+        "reasoningTokens": 491
+      },
+      "toolCalls": 1,
+      "format": "native",
+      "thinking": "low",
+      "t": 1794089864025
+    },
+    {
+      "type": "thought",
+      "model": "nvidia/nemotron-3.5-super-vl-120b-a12b",
+      "text": "All checks are complete. Let me summarize the evidence:\n\n1. **extract_indicators**: Message claims T-Mobile, offers $250 value in loyalty points, urgency (\"tonight\", \"expire\"), one link to t-mobile-rewards.club/claim. No request for codes, payment, or personal info directly in the text.\n\n2. **check_sender**: +1 (213) 555-0117 is VoIP, only 3 days old, 412 spam reports this week, messaged 8,790 distinct recipients in 24 hours, not a registered T-Mobile sender. High risk signals.\n\n3. **check_link**: t-mobile-rewards.club is a lookalike domain impersonating T-Mobile, registered only 4 days ago, .club TLD (high-abuse), not owned by T-Mobile. High risk.\n\n4. **lookup_official_contact**: T-Mobile's…",
+      "t": 1794089864026,
+      "turn": 1,
+      "ms": 5527,
+      "usage": {
+        "promptTokens": 3191,
+        "completionTokens": 1073,
+        "totalTokens": 4264,
+        "reasoningTokens": 491
+      }
+    },
+    {
+      "type": "guardrail",
+      "changed": false,
+      "ms": 0,
+      "t": 1794089864026
+    },
+    {
+      "type": "verdict",
+      "verdict": {
+        "risk": "scam",
+        "confidence": 0.97,
+        "scamType": "Expiring rewards / prize scam",
+        "headline": "This T-Mobile rewards text is a scam — do not click the link.",
+        "explanation": "The sender is a 3-day-old VoIP number with 412 spam reports and nearly 8,800 recipients in 24 hours — not a registered T-Mobile sender. The link goes to t-mobile-rewards.club, a 4-day-old lookalike domain that is not owned by T-Mobile. T-Mobile's official contact is 611 or the T-Life app, and they never ask you to redeem rewards through a link from an unknown number.",
+        "evidence": [
+          {
+            "signal": "Sender is new VoIP number with mass spam reports",
+            "detail": "+1 (213) 555-0117 is VoIP, 3 days old, 412 spam reports this week, messaged 8,790 distinct recipients in 24 hours, not a registered T-Mobile sender",
+            "weight": "high",
+            "direction": "risk",
+            "source": "check_sender"
+          },
+          {
+            "signal": "Link is a lookalike domain impersonating T-Mobile",
+            "detail": "t-mobile-rewards.club registered 4 days ago, .club TLD, not owned by T-Mobile (official domains are t-mobile.com and tmobile.com)",
+            "weight": "high",
+            "direction": "risk",
+            "source": "check_link"
+          },
+          {
+            "signal": "Matches known scam playbook",
+            "detail": "Matches the \"Expiring rewards / prize\" playbook — claims points expire tonight unless claimed through a link, using greed and urgency tactics",
+            "weight": "high",
+            "direction": "risk",
+            "source": "match_scam_patterns"
+          },
+          {
+            "signal": "T-Mobile never contacts customers this way",
+            "detail": "Official T-Mobile contact is dialing 611 or using the T-Life app; T-Mobile never asks to redeem rewards through a link from an unknown number",
+            "weight": "medium",
+            "direction": "risk",
+            "source": "lookup_official_contact"
+          }
+        ],
+        "actions": [
+          {
+            "id": "block_sender",
+            "label": "Block sender"
+          },
+          {
+            "id": "report_7726",
+            "label": "Report spam (7726)"
+          },
+          {
+            "id": "delete_message",
+            "label": "Delete message"
+          },
+          {
+            "id": "verify_official",
+            "label": "Check with the real company"
+          },
+          {
+            "id": "warn_family",
+            "label": "Warn my family"
+          },
+          {
+            "id": "open_recovery",
+            "label": "I already responded"
+          }
+        ],
+        "verifyContact": {
+          "org": "T-Mobile",
+          "how": "Dial 611 from your T-Mobile phone, or open the T-Life app",
+          "url": "https://www.t-mobile.com"
+        },
+        "uncertainty": "None"
+      },
+      "model": "nvidia/nemotron-3.5-super-vl-120b-a12b",
+      "t": 1794089864026
+    },
+    {
+      "type": "done",
+      "totalMs": 8016,
+      "llmCalls": 3,
+      "toolCalls": 5,
+      "t": 1794089864026,
+      "metrics": {
+        "llmMs": 8012,
+        "toolMs": 2,
+        "tokens": {
+          "promptTokens": 5307,
+          "completionTokens": 1360,
+          "totalTokens": 6667,
+          "reasoningTokens": 577
+        },
+        "byModel": {
+          "nvidia/nemotron-3.5-lightning-30b-a3b": {
+            "calls": 1,
+            "ms": 436,
+            "tokens": {
+              "promptTokens": 245,
+              "completionTokens": 25,
+              "totalTokens": 270
+            }
+          },
+          "nvidia/nemotron-3.5-super-vl-120b-a12b": {
+            "calls": 2,
+            "ms": 7576,
+            "tokens": {
+              "promptTokens": 5062,
+              "completionTokens": 1335,
+              "totalTokens": 6397,
+              "reasoningTokens": 577
+            }
+          }
+        },
+        "budgetMs": 25000
+      }
+    }
+  ]
+}
