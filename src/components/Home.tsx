@@ -427,9 +427,14 @@ export function FamilyLine({ id }: { id: Line }) {
               </ul>
             </section>
           )}
-          <button className="btn primary" style={{ marginTop: 12 }} onClick={() => d.toast(`${f.action}: this would open your phone app. (Demo)`)}>
-            <Icon name={f.id === "dad" ? "phone" : "msg"} size={18} /> {f.action}
-          </button>
+          <div className="contact-row">
+            <button className="btn primary" onClick={() => d.toast(`Calling ${f.name}: this would open your phone app. (Demo)`)}>
+              <Icon name="phone" size={18} /> Call {f.name}
+            </button>
+            <button className="btn secondary" onClick={() => d.toast(`Texting ${f.name}: this would open Messages. (Demo)`)}>
+              <Icon name="msg" size={18} /> Text {f.name}
+            </button>
+          </div>
           <p className="fine" style={{ marginTop: 10, justifyContent: "center" }}>
             {f.checkedThisWeek} messages checked privately on {f.pronoun} line this week
           </p>
