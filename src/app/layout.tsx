@@ -1,18 +1,20 @@
-import type { Metadata } from "next";
-import "@fontsource-variable/bricolage-grotesque";
-import "@fontsource-variable/public-sans";
-import "@fontsource-variable/jetbrains-mono";
+import type { Metadata, Viewport } from "next";
+import localFont from "next/font/local";
 import "./globals.css";
 
+const manrope = localFont({ src: "./fonts/manrope.woff2", variable: "--font-manrope", weight: "200 800", display: "swap" });
+
 export const metadata: Metadata = {
-  title: "Second Look: scam investigation agent",
-  description: "An AI agent that investigates suspicious texts, calls and links before you act on them. Built with NVIDIA Nemotron.",
+  title: "Second Look: calm scam protection for the whole family",
+  description: "Checks texts, calls, voicemails and links privately before you act on them, explains the call in plain words, and slows you down when it matters. Built with NVIDIA Nemotron.",
 };
+
+export const viewport: Viewport = { width: "device-width", initialScale: 1, themeColor: "#f5f5f7" };
 
 export default function RootLayout({ children }: LayoutProps<"/">) {
   return (
-    <html lang="en" className="h-full antialiased">
-      <body className="min-h-full">{children}</body>
+    <html lang="en" className={manrope.variable}>
+      <body>{children}</body>
     </html>
   );
 }
