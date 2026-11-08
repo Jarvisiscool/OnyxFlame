@@ -13,6 +13,7 @@ export function Nav() {
     { id: "home", label: "Home", icon: "home", go: () => d.go({ name: "home" }) },
     { id: "activity", label: "Activity", icon: "list", go: () => d.go({ name: "activity" }) },
     { id: "practice", label: "Practice", icon: "target", go: () => d.go({ name: "practice" }) },
+    { id: "ask", label: "Ask", icon: "msg", go: () => d.go({ name: "ask" }) },
   ] as const;
   return (
     <nav className="nav" aria-label="App">

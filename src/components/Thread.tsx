@@ -92,9 +92,14 @@ export function Thread({ id }: { id: string }) {
             </div>
           )}
           {v && (
-            <button className="link-btn" style={{ fontSize: 13.5, marginTop: 16 }} onClick={() => d.go({ name: "timeline", id })}>
-              Protection timeline
-            </button>
+            <span style={{ display: "flex", gap: 18, marginTop: 16, flexWrap: "wrap" }}>
+              <button className="link-btn" style={{ fontSize: 13.5 }} onClick={() => d.go({ name: "timeline", id })}>
+                Protection timeline
+              </button>
+              <button className="link-btn" style={{ fontSize: 13.5 }} onClick={() => d.go({ name: "ask", about: id })}>
+                Ask about this message
+              </button>
+            </span>
           )}
         </div>
       </div>

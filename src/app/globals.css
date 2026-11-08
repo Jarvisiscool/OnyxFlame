@@ -2417,3 +2417,125 @@ mark,
   border-color: var(--mag);
   color: var(--mag-dark);
 }
+
+/* ---------------- Ask about scams ---------------- */
+.ask-about {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  margin-top: 6px;
+  padding: 6px 10px;
+  border-radius: 10px;
+  background: var(--mag-tint);
+  color: var(--mag-dark);
+  font-size: 13px;
+}
+.ask-log {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-top: 14px;
+}
+.bubble {
+  max-width: 88%;
+  padding: 10px 13px;
+  border-radius: 16px;
+  font-size: 14.5px;
+  line-height: 1.45;
+}
+.bubble p {
+  margin: 0;
+  white-space: pre-wrap;
+}
+.bubble.user {
+  align-self: flex-end;
+  background: var(--mag);
+  color: #fff;
+  border-bottom-right-radius: 6px;
+}
+.bubble.assistant {
+  align-self: flex-start;
+  background: var(--soft);
+  color: var(--ink);
+  border-bottom-left-radius: 6px;
+}
+.bubble.off {
+  background: var(--amber-bg);
+  color: var(--amber);
+}
+.bubble.typing {
+  color: var(--ink-3);
+}
+.ask-links {
+  list-style: none;
+  margin: 8px 0 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+.ask-links a {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 10px;
+  border-radius: 10px;
+  background: var(--c-fff, #fff);
+  border: 1px solid var(--line);
+  color: var(--mag-dark);
+  font-weight: 700;
+  font-size: 13.5px;
+  text-decoration: none;
+}
+.ask-src {
+  display: block;
+  margin-top: 6px;
+  font-size: 11.5px;
+  color: var(--ink-3);
+}
+.ask-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 14px;
+}
+.ask-chips .chip {
+  padding: 8px 12px;
+  border-radius: 18px;
+  border: 1.5px solid var(--line);
+  background: var(--c-fff, #fff);
+  color: var(--ink);
+  font-size: 13px;
+  font-weight: 700;
+  text-align: left;
+}
+.ask-input {
+  display: flex;
+  gap: 8px;
+  padding: 8px 14px;
+  border-top: 1px solid var(--line);
+  background: var(--c-fff, #fff);
+}
+.ask-input input {
+  flex: 1;
+  min-height: 42px;
+  padding: 0 14px;
+  border-radius: 21px;
+  border: 1.5px solid var(--line);
+  background: var(--soft);
+  color: var(--ink);
+  font-size: 15px;
+}
+.ask-input button {
+  width: 42px;
+  height: 42px;
+  border-radius: 21px;
+  background: var(--mag);
+  color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.ask-input button:disabled {
+  opacity: 0.45;
+}

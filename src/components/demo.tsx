@@ -10,6 +10,7 @@ export type Screen =
   | { name: "home"; focusChecker?: boolean }
   | { name: "activity" }
   | { name: "practice" }
+  | { name: "ask"; about?: string }
   | { name: "thread"; id: string }
   | { name: "pause"; id: string }
   | { name: "timeline"; id: string; recover?: boolean };

@@ -11,6 +11,7 @@ import { Timeline } from "./Timeline";
 import { Lesson } from "./Lesson";
 import { Sheet } from "./Sheets";
 import { Login } from "./Login";
+import { Ask } from "./Ask";
 
 function useClock() {
   const [now, setNow] = useState<Date | null>(null);
@@ -46,6 +47,7 @@ export function Phone({ notifId, dismissNotif, toastText }: { notifId: string | 
   else if (s.name === "pause") view = <CalmPause key={s.id} id={s.id} />;
   else if (s.name === "timeline") view = <Timeline key={s.id} id={s.id} recover={s.recover} />;
   else if (s.name === "practice") view = <Lesson />;
+  else if (s.name === "ask") view = <Ask key={s.about ?? "all"} about={s.about} />;
   else if (s.name === "activity") view = <Activity />;
   else view = d.line === "maria" ? <Home focusChecker={s.focusChecker} /> : <FamilyLine id={d.line} />;
 
