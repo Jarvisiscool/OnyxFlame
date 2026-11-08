@@ -2817,3 +2817,23 @@ mark,
 .laptop-app .bubble {
   max-width: 80%;
 }
+
+.lt-foot {
+  margin-top: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+.lt-foot button {
+  min-height: 34px;
+  padding: 0 10px;
+  border-radius: 10px;
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--ink-3);
+  text-align: left;
+}
+.lt-foot button:hover {
+  background: var(--soft);
+  color: var(--ink);
+}

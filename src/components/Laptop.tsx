@@ -12,6 +12,7 @@ import { Login } from "./Login";
 import { Ask } from "./Ask";
 import { NotifCard } from "./Phone";
 import { Judges } from "./Judges";
+import { ThemeToggle } from "./ThemeToggle";
 
 type Status = { live: boolean; fastModel: string; deepModel: string; recordings: number } | null;
 
@@ -101,9 +102,10 @@ export function Laptop({
                     </button>
                   )}
                 </div>
-                <button className="lt-out" onClick={d.signOut}>
-                  Sign out
-                </button>
+                <div className="lt-foot">
+                  <ThemeToggle />
+                  <button onClick={d.signOut}>Sign out</button>
+                </div>
               </aside>
             )}
             <main className="lt-main">
