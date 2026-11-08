@@ -2793,18 +2793,18 @@ mark,
 
 /* Laptop: scale the whole app up a little and use more of the width. */
 .laptop-full {
-  --lz: 1.12;
+  --lz: 1.08;
   zoom: var(--lz);
   height: calc(100dvh / var(--lz));
 }
 @media (min-width: 1400px) {
   .laptop-full {
-    --lz: 1.2;
+    --lz: 1.12;
   }
 }
 @media (min-width: 1700px) {
   .laptop-full {
-    --lz: 1.32;
+    --lz: 1.15;
   }
 }
 .laptop-app .view-scroll > .pad,
