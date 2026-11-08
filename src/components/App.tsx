@@ -192,6 +192,8 @@ export function App() {
     return [...new Set([...mine.reverse(), ...fam])].slice(0, 5);
   }, [all, runs]);
 
+  const dismissNotif = useCallback(() => setNotifId(null), []);
+
   const doReset = useCallback(() => {
     reset();
     setInbox([]);
@@ -379,7 +381,7 @@ export function App() {
           </div>
         </section>
 
-        <Phone notifId={notifId} dismissNotif={() => setNotifId(null)} toastText={toastText} />
+        <Phone notifId={notifId} dismissNotif={dismissNotif} toastText={toastText} />
 
         <aside className="stage-right" aria-label="For judges: how it was checked">
           <Judges id={judgeId ?? null} status={status} />

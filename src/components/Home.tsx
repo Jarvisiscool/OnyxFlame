@@ -82,18 +82,23 @@ export function WarnCard({ msg, where }: { msg: InboxMessage; where: "home" | "t
   const g = gradeWords(v);
   return (
     <section className={`warn ${v.risk}`} aria-label={`${RISK_TITLE[v.risk]} warning`}>
-      <div className="wt">
-        <span className={`pill ${v.risk}`}>
-          <Icon name="alert" size={13} stroke={2.4} /> {RISK_TITLE[v.risk]}
-        </span>
-        <span className="pt">
-          {v.scamType} · {g.pct}% sure
-        </span>
-      </div>
-      {where === "home" && (
-        <h2>
-          {RISK_TITLE[v.risk]}: {v.scamType.charAt(0).toLowerCase() + v.scamType.slice(1)}
-        </h2>
+      {where === "home" ? (
+        <div className="wt" style={{ justifyContent: "space-between", flexWrap: "nowrap", alignItems: "flex-start" }}>
+          <h2 style={{ marginTop: 0, display: "flex", gap: 6, alignItems: "center" }}>
+            <Icon name="alert" size={17} stroke={2.4} />
+            {RISK_TITLE[v.risk]}: {v.scamType.charAt(0).toLowerCase() + v.scamType.slice(1)}
+          </h2>
+          <span className={`pill ${v.risk}`}>{g.pct}% sure</span>
+        </div>
+      ) : (
+        <div className="wt">
+          <span className={`pill ${v.risk}`}>
+            <Icon name="alert" size={13} stroke={2.4} /> {RISK_TITLE[v.risk]}
+          </span>
+          <span className="pt">
+            {v.scamType} · {g.pct}% sure
+          </span>
+        </div>
       )}
       <p>{ins.reason}</p>
       {where === "home" && (
@@ -216,7 +221,7 @@ function Checker({ focus }: { focus?: boolean }) {
           <span style={{ display: "block", marginTop: 4 }}>
             {v ? (
               <>
-                <b>{v.headline}</b> {v.risk !== "safe" ? (v.verifyContact ? `${v.verifyContact.how}.` : "Don't reply or tap links.") : ""}
+                <b>{v.headline}</b> {v.risk !== "safe" && v.verifyContact ? `${v.verifyContact.how}.` : ""}
               </>
             ) : run?.error ? (
               run.error

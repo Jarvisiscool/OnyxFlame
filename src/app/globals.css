@@ -1588,6 +1588,9 @@ mark,
   line-height: 1.35;
   padding: 5px 0;
 }
+.rec-list li::before {
+  content: none !important;
+}
 .rec-list .c {
   width: 20px;
   height: 20px;
@@ -2121,12 +2124,14 @@ mark,
 /* ---------------- Small screens: the phone becomes the page ---------------- */
 @media (max-width: 760px) {
   .stage {
-    display: block;
+    display: flex;
+    flex-direction: column;
     height: auto;
     overflow: visible;
     padding: 0;
   }
   .device-box {
+    order: -1;
     width: 100%;
     height: 100dvh;
   }
