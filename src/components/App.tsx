@@ -264,6 +264,23 @@ export function App() {
     [go],
   );
 
+  const stepBy = useCallback(
+    (dir: 1 | -1) => {
+      // Moving forward into the scam steps before any message has arrived: deliver the toll text first.
+      const all = steps.findIndex((st) => st.key === activeKey);
+      const ahead = all === -1 ? undefined : steps[all + dir];
+      if (dir === 1 && ahead?.disabled && !target && nextIdx === 0) {
+        deliverNext();
+        return;
+      }
+      const enabled = steps.filter((st) => !st.disabled);
+      const i = enabled.findIndex((st) => st.key === activeKey);
+      const next = i === -1 ? enabled[dir === 1 ? 1 : 0] : enabled[Math.max(0, Math.min(enabled.length - 1, i + dir))];
+      if (next && next.key !== activeKey) runStep(next);
+    },
+    [steps, activeKey, runStep, target, nextIdx, deliverNext],
+  );
+
   useEffect(() => {
     function onKey(e: KeyboardEvent) {
       const el = e.target as HTMLElement;
@@ -274,18 +291,13 @@ export function App() {
       if (el.closest("input, textarea, select, [role=dialog]") || e.metaKey || e.ctrlKey || e.altKey) return;
       if (e.key === "n" || e.key === "N") deliverNext();
       if (e.key === "ArrowRight" || e.key === "ArrowLeft") {
-        const enabled = steps.filter((s) => !s.disabled);
-        const i = enabled.findIndex((s) => s.key === activeKey);
-        const next = enabled[e.key === "ArrowRight" ? Math.min(enabled.length - 1, i + 1) : Math.max(0, i - 1)];
-        if (next) {
-          e.preventDefault();
-          runStep(next);
-        }
+        e.preventDefault();
+        stepBy(e.key === "ArrowRight" ? 1 : -1);
       }
     }
     window.addEventListener("keydown", onKey);
     return () => window.removeEventListener("keydown", onKey);
-  }, [deliverNext, steps, activeKey, runStep]);
+  }, [deliverNext, stepBy]);
 
   const ctl: Ctl = {
     inbox,
@@ -397,8 +409,13 @@ export function App() {
               </div>
             ))}
             <div className="keys">
-              <kbd>←</kbd>
-              <kbd>→</kbd> step through
+              <button type="button" className="key-btn" onClick={() => stepBy(-1)} aria-label="Previous step" aria-keyshortcuts="ArrowLeft">
+                ←
+              </button>
+              <button type="button" className="key-btn" onClick={() => stepBy(1)} aria-label="Next step" aria-keyshortcuts="ArrowRight">
+                →
+              </button>
+              step through
             </div>
           </nav>
           <div className="stage-links">
