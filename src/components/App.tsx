@@ -7,8 +7,9 @@ import type { InboxMessage, RecoveryPlan, WhatHappened } from "@/lib/types";
 import { useAnalysis } from "./useAnalysis";
 import { DemoCtx, baseId, type Ctl, type Decision, type LessonInfo, type Labels, type Line, type RecoveryState, type Screen, type SheetName } from "./demo";
 import { Phone } from "./Phone";
+import { Laptop } from "./Laptop";
 import { Judges, HowItWorks } from "./Judges";
-import { Logo, gradeWords, senderName } from "./ui";
+import { Icon, Logo, gradeWords, senderName } from "./ui";
 import { ThemeToggle } from "./ThemeToggle";
 
 type Status = { live: boolean; fastModel: string; deepModel: string; recordings: number };
@@ -32,6 +33,22 @@ interface Step {
   screen?: Screen;
   line: Line;
   disabled?: boolean;
+}
+
+/** Scale the 1180×760 laptop to fit beside the presenter column. */
+function useLaptopScale() {
+  const [s, setS] = useState(0.8);
+  useLayoutEffect(() => {
+    const measure = () => {
+      const byW = (window.innerWidth - 250 - 120) / 1180;
+      const byH = (window.innerHeight - 40) / 790;
+      setS(Math.round(Math.max(0.5, Math.min(1, byW, byH)) * 1000) / 1000);
+    };
+    measure();
+    window.addEventListener("resize", measure);
+    return () => window.removeEventListener("resize", measure);
+  }, []);
+  return s;
 }
 
 /** Scale the 406×816 device to the viewport height (projectors: 1280×720, 1440×900). */
@@ -70,6 +87,8 @@ export function App() {
   const [how, setHow] = useState(false);
   const { runs, analyze, reset } = useAnalysis(replay);
   const scale = usePhoneScale();
+  const lscale = useLaptopScale();
+  const [device, setDevice] = useState<"phone" | "laptop">("phone");
   const howBtn = useRef<HTMLButtonElement>(null);
 
   useEffect(() => {
@@ -227,7 +246,7 @@ export function App() {
     return [
       { key: "login", label: "Sign in", group: "Maria's phone", screen: { name: "home" }, line: "maria" },
       { key: "home", label: "Before", group: "Maria's phone", screen: { name: "home" }, line: "maria" },
-      { key: "lock", label: "Warned: lock screen", group: "Maria's phone", screen: { name: "lock" }, line: "maria" },
+      { key: "lock", label: device === "laptop" ? "Warned: notification" : "Warned: lock screen", group: "Maria's phone", screen: { name: "lock" }, line: "maria" },
       { key: "thread", label: "Warned: in the thread", group: "Maria's phone", screen: t ? { name: "thread", id: t } : undefined, line: "maria", disabled: !t },
       { key: "pause", label: "The calm pause", group: "Maria's phone", screen: t ? { name: "pause", id: t } : undefined, line: "maria", disabled: !t },
       { key: "timeline", label: "After: timeline", group: "Maria's phone", screen: t ? { name: "timeline", id: t, recover: true } : undefined, line: "maria", disabled: !t },
@@ -242,7 +261,7 @@ export function App() {
       { key: "practice", label: "Practice lesson", group: "Practice & check", screen: { name: "practice" }, line: "maria" },
       { key: "checker", label: "Check something", group: "Practice & check", screen: { name: "home", focusChecker: true }, line: "maria" },
     ];
-  }, [target, family]);
+  }, [target, family, device]);
   const activeKey = !signedIn
     ? "login"
     : line !== "maria" && screen.name === "home"
@@ -369,13 +388,20 @@ export function App() {
 
   return (
     <DemoCtx.Provider value={ctl}>
-      <main className="stage" style={{ ["--s" as string]: scale }}>
+      <main className={device === "laptop" ? "stage laptop-mode" : "stage"} style={{ ["--s" as string]: scale, ["--ls" as string]: lscale }}>
         <section className="stage-left" aria-label="Presenter controls">
           <div>
             <div className="brand">
               <Logo /> Second Look
             </div>
             <div className="brand-sub">Calm scam protection for the whole family</div>
+          </div>
+          <div className="device-toggle" role="group" aria-label="Show Second Look on">
+            {(["phone", "laptop"] as const).map((dv) => (
+              <button key={dv} aria-pressed={device === dv} onClick={() => setDevice(dv)}>
+                <Icon name={dv === "phone" ? "phone" : "globe"} size={15} /> {dv === "phone" ? "Phone" : "Laptop"}
+              </button>
+            ))}
           </div>
           <nav className="stepper" aria-label="Demo steps">
             <div style={{ marginBottom: 16 }}>
@@ -432,11 +458,33 @@ export function App() {
           </div>
         </section>
 
-        <Phone notifId={notifId} dismissNotif={dismissNotif} toastText={toastText} />
-
-        <aside className="stage-right" aria-label="For judges: how it was checked">
-          <Judges id={judgeId ?? null} status={status} />
-        </aside>
+        {device === "phone" ? (
+          <>
+            <Phone notifId={notifId} dismissNotif={dismissNotif} toastText={toastText} />
+            <aside className="stage-right" aria-label="For judges: how it was checked">
+              <Judges id={judgeId ?? null} status={status} />
+            </aside>
+          </>
+        ) : (
+          <>
+            <Laptop notifId={notifId} dismissNotif={dismissNotif} toastText={toastText} judgeId={judgeId ?? null} status={status} />
+            <div className="lt-presenter" role="group" aria-label="Presenter controls">
+              <button onClick={() => setDevice("phone")}>
+                <Icon name="phone" size={14} /> Phone view
+              </button>
+              <button onClick={() => stepBy(-1)} aria-label="Previous step">
+                ←
+              </button>
+              <button onClick={() => stepBy(1)} aria-label="Next step">
+                →
+              </button>
+              <button onClick={deliverNext} disabled={remaining === 0}>
+                Next message <kbd>N</kbd>
+              </button>
+              <button onClick={doReset}>Reset</button>
+            </div>
+          </>
+        )}
         <div className="sr-only" aria-live="polite">
           {announce}
         </div>
