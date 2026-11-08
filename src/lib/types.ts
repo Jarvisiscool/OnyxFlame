@@ -200,3 +200,42 @@ export interface GymCard {
   isScam: boolean;
   tells: string[];
 }
+
+/* ---------------- Practice lessons (Nemotron-written, with an offline fallback) ---------------- */
+
+export type LessonQuestionType = "mcq" | "scam_or_legit";
+
+export interface LessonQuestion {
+  id: string;
+  type: LessonQuestionType;
+  channel: Channel;
+  from: string;
+  /** Email subject line */
+  subject?: string;
+  body: string;
+  /** Question text for multiple choice ("What's the biggest giveaway?") */
+  prompt?: string;
+  /** Multiple-choice options (3-4) */
+  options?: string[];
+  /** For mcq: the exact option text. For scam_or_legit: "scam" or "legit". */
+  answer: string;
+  /** Short phrases, copied from the body where possible, so the UI can highlight them */
+  tells: string[];
+  explanation: string;
+  /** Inbox style to draw an email in (generic look, no logos) */
+  look?: "gmail" | "outlook";
+}
+
+export interface Flashcard {
+  front: string;
+  back: string;
+}
+
+export interface Lesson {
+  id: string;
+  topic: string;
+  lesson: { title: string; points: string[]; example: string };
+  questions: LessonQuestion[];
+  flashcards: Flashcard[];
+  source?: RunMode;
+}
