@@ -1,7 +1,6 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import { FAMILY } from "@/data/demo-family";
 import type { InboxMessage } from "@/lib/types";
 import { useDemo, type Line } from "./demo";
 import { insights, summarize } from "./events";
@@ -31,20 +30,25 @@ function LineSwitcher() {
   const d = useDemo();
   const lines: { id: Line; name: string; sub: string; initial: string; bg: string; fg: string; alert?: boolean }[] = [
     { id: "maria", name: "Maria", sub: "You", initial: "M", bg: "var(--av-m-bg, #fcdcec)", fg: "var(--av-m-fg, #8a0047)" },
-    ...FAMILY.map((f) => ({
+    ...d.family.map((f, i) => ({
       id: f.id,
       name: f.relation,
       sub: f.status === "okay" ? "Okay" : "Needs help",
       initial: f.initial,
-      bg: f.id === "dad" ? "var(--av-d-bg, #dfe7fb)" : "var(--av-s-bg, #dcf3e5)",
-      fg: f.id === "dad" ? "var(--av-d-fg, #1d3f8a)" : "var(--av-s-fg, #0b5a3c)",
+      bg: i % 2 === 0 ? "var(--av-d-bg, #dfe7fb)" : "var(--av-s-bg, #dcf3e5)",
+      fg: i % 2 === 0 ? "var(--av-d-fg, #1d3f8a)" : "var(--av-s-fg, #0b5a3c)",
       alert: f.status !== "okay",
     })),
   ];
   return (
     <div className="lines" role="group" aria-label="Family lines">
       {lines.map((l) => (
-        <button key={l.id} className="line" aria-pressed={d.line === l.id} onClick={() => d.setLine(l.id)} aria-label={`${l.name}: ${l.sub}`}>
+        <button
+          key={l.id}
+          className="line"
+          aria-pressed={d.line === l.id}
+          ref={d.line === l.id ? (el) => el?.scrollIntoView({ block: "nearest", inline: "nearest" }) : undefined}
+          onClick={() => d.setLine(l.id)} aria-label={`${l.name}: ${l.sub}`}>
           <span className={`av${l.alert ? " alert" : ""}`} style={{ background: l.bg, color: l.fg }}>
             {l.initial}
           </span>
@@ -54,6 +58,17 @@ function LineSwitcher() {
           </span>
         </button>
       ))}
+      {d.family.length < 5 && (
+        <button className="line add" onClick={() => d.openSheet("addMember")} aria-label="Add a family member">
+          <span className="av" aria-hidden>
+            +
+          </span>
+          <span className="nm">
+            Add
+            <span>Family</span>
+          </span>
+        </button>
+      )}
     </div>
   );
 }
@@ -353,7 +368,7 @@ export function Home({ focusChecker }: { focusChecker?: boolean }) {
 
 export function FamilyLine({ id }: { id: Line }) {
   const d = useDemo();
-  const f = FAMILY.find((x) => x.id === id);
+  const f = d.family.find((x) => x.id === id);
   if (!f) return null;
   const done = f.recovery?.steps.filter((s) => s.done).length ?? 0;
   return (
@@ -461,7 +476,7 @@ export function Activity() {
           </div>
           <h2 className="sec-title">Family alerts</h2>
           <div className="card" style={{ padding: "0 12px" }}>
-            {FAMILY.flatMap((f) =>
+            {d.family.flatMap((f) =>
               f.alerts.map((a) => (
                 <button key={a.id} className="msg-row" onClick={() => d.setLine(f.id)}>
                   <span style={{ flex: 1, minWidth: 0 }}>

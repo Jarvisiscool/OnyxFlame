@@ -18,12 +18,12 @@ export interface FamilyAlert {
 }
 
 export interface FamilyLine {
-  id: "dad" | "sofia";
+  id: string;
   name: string;
   relation: string;
   initial: string;
   age: number;
-  pronoun: "his" | "her";
+  pronoun: "his" | "her" | "their";
   status: "okay" | "needs_help";
   headline: string;
   sub: string;
@@ -125,3 +125,23 @@ export const FAMILY: FamilyLine[] = [
     checkedThisWeek: 31,
   },
 ];
+
+/** A newly invited family line: protected, no alerts yet, sharing only after they accept. */
+export function newFamilyLine(input: { name: string; relation: string; age: number; phone?: string }): FamilyLine {
+  const name = input.name.trim();
+  return {
+    id: `m-${Date.now()}`,
+    name,
+    relation: input.relation,
+    initial: name[0]?.toUpperCase() ?? "?",
+    age: input.age,
+    pronoun: "their",
+    status: "okay",
+    headline: `${name} is protected`,
+    sub: "No scam alerts yet. Checks run privately on their phone.",
+    consent: `${name} accepted sharing scam alerts with you. Their messages, calls and voicemails stay private.`,
+    alerts: [],
+    action: `Message ${name}`,
+    checkedThisWeek: 0,
+  };
+}

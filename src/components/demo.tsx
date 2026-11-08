@@ -1,4 +1,5 @@
 "use client";
+import type { FamilyLine } from "@/data/demo-family";
 
 import { createContext, useContext } from "react";
 import type { InboxMessage, RecoveryPlan, WhatHappened } from "@/lib/types";
@@ -13,9 +14,9 @@ export type Screen =
   | { name: "pause"; id: string }
   | { name: "timeline"; id: string; recover?: boolean };
 
-export type Line = "maria" | "dad" | "sofia";
+export type Line = string;
 export type Decision = "reported" | "safe";
-export type SheetName = "labels" | "blocklist" | "report";
+export type SheetName = "labels" | "blocklist" | "report" | "addMember";
 
 export interface RecoveryState {
   what?: WhatHappened;
@@ -68,6 +69,11 @@ export interface Ctl {
   lessonInfo: LessonInfo | null;
   setLessonInfo: (l: LessonInfo | null) => void;
   find: (id: string) => InboxMessage | undefined;
+  family: FamilyLine[];
+  addMember: (m: { name: string; relation: string; age: number; phone?: string }) => void;
+  signedIn: boolean;
+  signIn: () => void;
+  signOut: () => void;
 }
 
 export const DemoCtx = createContext<Ctl | null>(null);

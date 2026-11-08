@@ -10,6 +10,7 @@ import { Thread, CalmPause } from "./Thread";
 import { Timeline } from "./Timeline";
 import { Lesson } from "./Lesson";
 import { Sheet } from "./Sheets";
+import { Login } from "./Login";
 
 function useClock() {
   const [now, setNow] = useState<Date | null>(null);
@@ -39,7 +40,8 @@ export function Phone({ notifId, dismissNotif, toastText }: { notifId: string | 
   }, [notifRisk, notifId, dismissNotif]);
 
   let view: React.ReactNode;
-  if (s.name === "lock") view = <LockScreen now={now} />;
+  if (!d.signedIn && s.name !== "lock") view = <Login />;
+  else if (s.name === "lock") view = <LockScreen now={now} />;
   else if (s.name === "thread") view = <Thread id={s.id} />;
   else if (s.name === "pause") view = <CalmPause key={s.id} id={s.id} />;
   else if (s.name === "timeline") view = <Timeline key={s.id} id={s.id} recover={s.recover} />;

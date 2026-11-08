@@ -2,7 +2,7 @@
 
 import { useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState } from "react";
 import { DEMO_INBOX } from "@/data/demo-inbox";
-import { FAMILY } from "@/data/demo-family";
+import { FAMILY, newFamilyLine, type FamilyLine } from "@/data/demo-family";
 import type { InboxMessage, RecoveryPlan, WhatHappened } from "@/lib/types";
 import { useAnalysis } from "./useAnalysis";
 import { DemoCtx, baseId, type Ctl, type Decision, type LessonInfo, type Labels, type Line, type RecoveryState, type Screen, type SheetName } from "./demo";
@@ -54,6 +54,8 @@ export function App() {
   const [nextIdx, setNextIdx] = useState(0);
   const [screen, setScreen] = useState<Screen>({ name: "home" });
   const [line, setLine] = useState<Line>("maria");
+  const [family, setFamily] = useState<FamilyLine[]>(FAMILY);
+  const [signedIn, setSignedIn] = useState(false);
   const [notifId, setNotifId] = useState<string | null>(null);
   const [focusId, setFocusId] = useState<string | null>(null);
   const [decisions, setDecisions] = useState<Record<string, Decision>>({});
@@ -107,6 +109,7 @@ export function App() {
     setNotifId(msg.id);
     setFocusId(msg.id);
     setLine("maria");
+    setSignedIn(true);
     setScreen((s) => (s.name === "lock" || s.name === "home" ? s : { name: "home" }));
     analyze(msg);
   }, [analyze, nextIdx]);
@@ -189,15 +192,17 @@ export function App() {
       const v = runs[m.id]?.verdict;
       return v && v.risk !== "safe" ? [v.scamType] : [];
     });
-    const fam = FAMILY.flatMap((f) => f.alerts.filter((a) => a.risk === "scam").map((a) => a.scamType));
+    const fam = family.flatMap((f) => f.alerts.filter((a) => a.risk === "scam").map((a) => a.scamType));
     return [...new Set([...mine.reverse(), ...fam])].slice(0, 5);
-  }, [all, runs]);
+  }, [all, runs, family]);
 
   const dismissNotif = useCallback(() => setNotifId(null), []);
 
   const doReset = useCallback(() => {
     reset();
     setInbox([]);
+    setFamily(FAMILY);
+    setSignedIn(false);
     setChecks([]);
     setNextIdx(0);
     setScreen({ name: "home" });
@@ -220,20 +225,27 @@ export function App() {
   const steps: Step[] = useMemo(() => {
     const t = target?.id;
     return [
+      { key: "login", label: "Sign in", group: "Maria's phone", screen: { name: "home" }, line: "maria" },
       { key: "home", label: "Before", group: "Maria's phone", screen: { name: "home" }, line: "maria" },
       { key: "lock", label: "Warned: lock screen", group: "Maria's phone", screen: { name: "lock" }, line: "maria" },
       { key: "thread", label: "Warned: in the thread", group: "Maria's phone", screen: t ? { name: "thread", id: t } : undefined, line: "maria", disabled: !t },
       { key: "pause", label: "The calm pause", group: "Maria's phone", screen: t ? { name: "pause", id: t } : undefined, line: "maria", disabled: !t },
       { key: "timeline", label: "After: timeline", group: "Maria's phone", screen: t ? { name: "timeline", id: t, recover: true } : undefined, line: "maria", disabled: !t },
       { key: "activity", label: "Activity log", group: "Maria's phone", screen: { name: "activity" }, line: "maria" },
-      { key: "dad", label: "Dad (Frank, 68)", group: "Family lines", screen: { name: "home" }, line: "dad" },
-      { key: "sofia", label: "Sofia (15)", group: "Family lines", screen: { name: "home" }, line: "sofia" },
+      ...family.map((f): Step => ({
+        key: f.id,
+        label: f.id === "dad" ? `Dad (${f.name}, ${f.age})` : `${f.name} (${f.age})`,
+        group: "Family lines",
+        screen: { name: "home" },
+        line: f.id,
+      })),
       { key: "practice", label: "Practice lesson", group: "Practice & check", screen: { name: "practice" }, line: "maria" },
       { key: "checker", label: "Check something", group: "Practice & check", screen: { name: "home", focusChecker: true }, line: "maria" },
     ];
-  }, [target]);
-  const activeKey =
-    line !== "maria" && screen.name === "home"
+  }, [target, family]);
+  const activeKey = !signedIn
+    ? "login"
+    : line !== "maria" && screen.name === "home"
       ? line
       : screen.name === "home"
         ? screen.focusChecker
@@ -245,6 +257,7 @@ export function App() {
   const runStep = useCallback(
     (st: Step) => {
       if (!st.screen || st.disabled) return;
+      setSignedIn(st.key !== "login");
       setLine(st.line);
       go(st.screen);
     },
@@ -307,6 +320,25 @@ export function App() {
     lessonInfo,
     setLessonInfo,
     find,
+    family,
+    addMember: (m) => {
+      const f = newFamilyLine(m);
+      setFamily((xs) => [...xs, f]);
+      setSheet(null);
+      setLine(f.id);
+      setScreen({ name: "home" });
+      setToastText(`Invite sent to ${f.name}. Only scam alerts are shared, never their messages.`);
+    },
+    signedIn,
+    signIn: () => {
+      setSignedIn(true);
+      setScreen({ name: "home" });
+    },
+    signOut: () => {
+      setSignedIn(false);
+      setLine("maria");
+      setSheet(null);
+    },
   };
 
   const remaining = DEMO_INBOX.length - nextIdx;

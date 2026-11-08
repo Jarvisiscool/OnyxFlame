@@ -1,10 +1,10 @@
 "use client";
 
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useDemo, type Labels } from "./demo";
 import { Icon, VerdictPill, senderName } from "./ui";
 
-const TITLES = { labels: "Scam labels", blocklist: "Block list", report: "Report a scam" } as const;
+const TITLES = { labels: "Scam labels", blocklist: "Block list", report: "Report a scam", addMember: "Add a family member" } as const;
 
 export function Sheet() {
   const d = useDemo();
@@ -108,7 +108,59 @@ export function Sheet() {
             </button>
           </>
         )}
+        {d.sheet === "addMember" && <AddMember />}
       </div>
     </div>
+  );
+}
+
+const RELATIONS = ["Mom", "Dad", "Grandparent", "Partner", "Son", "Daughter", "Other"];
+
+function AddMember() {
+  const d = useDemo();
+  const [name, setName] = useState("");
+  const [relation, setRelation] = useState("Grandparent");
+  const [age, setAge] = useState("");
+  const [phone, setPhone] = useState("");
+  const ageN = Number(age);
+  const ok = name.trim().length > 0 && Number.isFinite(ageN) && ageN > 0 && ageN < 120;
+  return (
+    <form
+      className="form"
+      onSubmit={(e) => {
+        e.preventDefault();
+        if (ok) d.addMember({ name, relation, age: ageN, phone: phone || undefined });
+      }}
+    >
+      <p className="lead">They get Second Look on their own phone. You only see scam alerts and whether they&apos;re okay, never their messages.</p>
+      <label>
+        Name
+        <input value={name} onChange={(e) => setName(e.target.value)} placeholder="e.g. Rosa" autoComplete="off" required />
+      </label>
+      <div className="form-row">
+        <label>
+          Relationship
+          <select value={relation} onChange={(e) => setRelation(e.target.value)}>
+            {RELATIONS.map((r) => (
+              <option key={r}>{r}</option>
+            ))}
+          </select>
+        </label>
+        <label>
+          Age
+          <input value={age} onChange={(e) => setAge(e.target.value.replace(/\D/g, "").slice(0, 3))} inputMode="numeric" placeholder="72" required />
+        </label>
+      </div>
+      <label>
+        Their phone number <small>(demo: use a 555 number)</small>
+        <input value={phone} onChange={(e) => setPhone(e.target.value)} inputMode="tel" placeholder="(469) 555-0142" autoComplete="off" />
+      </label>
+      <p className="note">
+        <Icon name="lock" size={14} /> They&apos;ll get an invite and choose what to share. Adults can stop sharing any time.
+      </p>
+      <button className="btn primary" type="submit" disabled={!ok}>
+        Send invite
+      </button>
+    </form>
   );
 }

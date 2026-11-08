@@ -2,7 +2,6 @@
 
 import { useEffect, useRef } from "react";
 import results from "@/data/eval-results.json";
-import { FAMILY } from "@/data/demo-family";
 import { useDemo } from "./demo";
 import { insights, redactionWords, summarize } from "./events";
 import { Icon, VerdictPill, fmtMs, friendlyModel, gradeWords } from "./ui";
@@ -34,7 +33,8 @@ export function Judges({ id, status }: { id: string | null; status: Status }) {
   const idleMode = status ? (status.live ? "live" : "offline") : undefined;
 
   if (d.line !== "maria" && d.screen.name === "home") {
-    const f = FAMILY.find((x) => x.id === d.line)!;
+    const f = d.family.find((x) => x.id === d.line);
+    if (!f) return null;
     return (
       <Card title={`What Maria can see on ${f.relation === "Dad" ? "Dad's" : `${f.name}'s`} line`}>
         <div className="rb">
