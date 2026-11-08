@@ -296,26 +296,15 @@ export function Home({ focusChecker }: { focusChecker?: boolean }) {
           <div className="tools" role="group" aria-label="Scam Shield tools">
             <button className="tool" onClick={() => d.openSheet("labels")}>
               <Icon name="tag" size={20} />
-              Scam
-              <br />
-              labels
+              Scam labels
             </button>
             <button className="tool" onClick={() => d.openSheet("blocklist")}>
               <Icon name="ban" size={20} />
-              Block
-              <br />
-              list
+              Block list
             </button>
             <button className="tool" onClick={() => d.openSheet("report")}>
               <Icon name="flag" size={20} />
-              Report
-              <br />a scam
-            </button>
-            <button className="tool" onClick={() => d.go({ name: "activity" })}>
-              <Icon name="list" size={20} />
-              Activity
-              <br />
-              log
+              Report a scam
             </button>
           </div>
           <div style={{ marginTop: 12 }}>
