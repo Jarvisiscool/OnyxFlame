@@ -474,22 +474,30 @@ export function App() {
           </>
         ) : (
           <>
-            <Laptop notifId={notifId} dismissNotif={dismissNotif} toastText={toastText} judgeId={judgeId ?? null} status={status} />
-            <div className="lt-presenter" role="group" aria-label="Presenter controls">
-              <button onClick={() => setDevice("phone")}>
-                <Icon name="phone" size={14} /> Phone view
-              </button>
-              <button onClick={() => stepBy(-1)} aria-label="Previous step">
-                ←
-              </button>
-              <button onClick={() => stepBy(1)} aria-label="Next step">
-                →
-              </button>
-              <button onClick={deliverNext} disabled={remaining === 0}>
-                Next message <kbd>N</kbd>
-              </button>
-              <button onClick={doReset}>Reset</button>
-            </div>
+            <Laptop
+              notifId={notifId}
+              dismissNotif={dismissNotif}
+              toastText={toastText}
+              judgeId={judgeId ?? null}
+              status={status}
+              controls={
+                <>
+                  <button onClick={() => setDevice("phone")} title="Switch to the phone view">
+                    <Icon name="phone" size={14} /> Phone
+                  </button>
+                  <button onClick={() => stepBy(-1)} aria-label="Previous step">
+                    ←
+                  </button>
+                  <button onClick={() => stepBy(1)} aria-label="Next step">
+                    →
+                  </button>
+                  <button onClick={deliverNext} disabled={remaining === 0} aria-label="Next message" title="Next message (N)">
+                    Next <kbd>N</kbd>
+                  </button>
+                  <button onClick={doReset}>Reset</button>
+                </>
+              }
+            />
           </>
         )}
         <div className="sr-only" aria-live="polite">

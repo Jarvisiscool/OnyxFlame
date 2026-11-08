@@ -26,12 +26,14 @@ export function Laptop({
   toastText,
   judgeId,
   status,
+  controls,
 }: {
   notifId: string | null;
   dismissNotif: () => void;
   toastText: string | null;
   judgeId: string | null;
   status: Status;
+  controls: React.ReactNode;
 }) {
   const d = useDemo();
   const s = d.screen;
@@ -103,10 +105,19 @@ export function Laptop({
                   )}
                 </div>
                 <div className="lt-foot">
+                  <div className="lt-demo" role="group" aria-label="Demo controls">
+                    <span>Demo controls</span>
+                    <div>{controls}</div>
+                  </div>
                   <ThemeToggle />
                   <button onClick={d.signOut}>Sign out</button>
                 </div>
               </aside>
+            )}
+            {!d.signedIn && (
+              <div className="lt-presenter" role="group" aria-label="Demo controls">
+                {controls}
+              </div>
             )}
             <main className="lt-main">
               {view}
