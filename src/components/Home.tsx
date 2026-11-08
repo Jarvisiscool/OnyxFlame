@@ -428,6 +428,7 @@ export function FamilyLine({ id }: { id: Line }) {
           <p className="fine" style={{ marginTop: 10, justifyContent: "center" }}>
             {f.checkedThisWeek} messages checked privately on {f.pronoun} line this week
           </p>
+          <RemoveMember key={f.id} id={f.id} name={f.name} />
         </div>
       </div>
       <Nav />
@@ -490,6 +491,33 @@ export function Activity() {
         </div>
       </div>
       <Nav />
+    </div>
+  );
+}
+
+/** Remove someone from the family plan, with a confirm step. */
+function RemoveMember({ id, name }: { id: string; name: string }) {
+  const d = useDemo();
+  const [confirm, setConfirm] = useState(false);
+  if (!confirm)
+    return (
+      <button className="remove-btn" onClick={() => setConfirm(true)}>
+        Remove {name} from family plan
+      </button>
+    );
+  return (
+    <div className="remove-confirm" role="alertdialog" aria-label={`Remove ${name}?`}>
+      <p>
+        <b>Remove {name}?</b> They&apos;ll keep their own protection, but stop sharing scam alerts with you.
+      </p>
+      <div className="contact-row">
+        <button className="btn danger" onClick={() => d.removeMember(id)}>
+          Remove
+        </button>
+        <button className="btn secondary" onClick={() => setConfirm(false)} autoFocus>
+          Cancel
+        </button>
+      </div>
     </div>
   );
 }

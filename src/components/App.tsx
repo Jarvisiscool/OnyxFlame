@@ -360,6 +360,13 @@ export function App() {
       setScreen({ name: "home" });
       setToastText(`Invite sent to ${f.name}. Only scam alerts are shared, never their messages.`);
     },
+    removeMember: (id) => {
+      const f = family.find((x) => x.id === id);
+      setFamily((xs) => xs.filter((x) => x.id !== id));
+      setLine("maria");
+      setScreen({ name: "home" });
+      if (f) setToastText(`${f.name} was removed from your family plan. They stopped sharing scam alerts with you.`);
+    },
     signedIn,
     signIn: () => {
       setSignedIn(true);

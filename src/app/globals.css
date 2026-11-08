@@ -2837,3 +2837,32 @@ mark,
   background: var(--soft);
   color: var(--ink);
 }
+
+.remove-btn {
+  display: block;
+  margin: 18px auto 4px;
+  padding: 8px 12px;
+  border-radius: 10px;
+  font-size: 13.5px;
+  font-weight: 700;
+  color: var(--danger);
+}
+.remove-btn:hover {
+  background: var(--danger-bg);
+}
+.remove-confirm {
+  margin-top: 16px;
+  padding: 14px;
+  border-radius: 16px;
+  background: var(--danger-bg);
+}
+.remove-confirm p {
+  margin: 0;
+  font-size: 14px;
+  line-height: 1.45;
+  color: var(--ink);
+}
+.btn.danger {
+  background: var(--danger);
+  color: #fff;
+}

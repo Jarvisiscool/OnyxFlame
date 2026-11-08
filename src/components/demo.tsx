@@ -72,6 +72,7 @@ export interface Ctl {
   find: (id: string) => InboxMessage | undefined;
   family: FamilyLine[];
   addMember: (m: { name: string; relation: string; age: number; phone?: string }) => void;
+  removeMember: (id: string) => void;
   signedIn: boolean;
   signIn: () => void;
   signOut: () => void;
