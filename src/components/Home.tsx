@@ -30,14 +30,14 @@ export function Nav() {
 function LineSwitcher() {
   const d = useDemo();
   const lines: { id: Line; name: string; sub: string; initial: string; bg: string; fg: string; alert?: boolean }[] = [
-    { id: "maria", name: "Maria", sub: "You", initial: "M", bg: "#fcdcec", fg: "#8a0047" },
+    { id: "maria", name: "Maria", sub: "You", initial: "M", bg: "var(--av-m-bg, #fcdcec)", fg: "var(--av-m-fg, #8a0047)" },
     ...FAMILY.map((f) => ({
       id: f.id,
       name: f.relation,
       sub: f.status === "okay" ? "Okay" : "Needs help",
       initial: f.initial,
-      bg: f.id === "dad" ? "#dfe7fb" : "#dcf3e5",
-      fg: f.id === "dad" ? "#1d3f8a" : "#0b5a3c",
+      bg: f.id === "dad" ? "var(--av-d-bg, #dfe7fb)" : "var(--av-s-bg, #dcf3e5)",
+      fg: f.id === "dad" ? "var(--av-d-fg, #1d3f8a)" : "var(--av-s-fg, #0b5a3c)",
       alert: f.status !== "okay",
     })),
   ];

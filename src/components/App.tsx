@@ -9,6 +9,7 @@ import { DemoCtx, baseId, type Ctl, type Decision, type LessonInfo, type Labels,
 import { Phone } from "./Phone";
 import { Judges, HowItWorks } from "./Judges";
 import { Logo, gradeWords, senderName } from "./ui";
+import { ThemeToggle } from "./ThemeToggle";
 
 type Status = { live: boolean; fastModel: string; deepModel: string; recordings: number };
 
@@ -373,6 +374,7 @@ export function App() {
               How it works &amp; results
             </button>
             <button onClick={doReset}>Reset demo</button>
+            <ThemeToggle />
             {status && status.recordings > 0 && (
               <label style={{ display: "inline-flex", alignItems: "center", gap: 6, cursor: "pointer" }}>
                 <input type="checkbox" checked={replay} onChange={(e) => setReplay(e.target.checked)} /> Replay saved runs
